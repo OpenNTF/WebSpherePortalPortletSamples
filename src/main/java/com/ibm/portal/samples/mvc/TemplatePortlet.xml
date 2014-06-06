@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<portlet xmlns="http://java.sun.com/xml/ns/portlet/portlet-app_2_0.xsd">
+
+	<portlet-name>TemplatePortlet</portlet-name>
+
+	<portlet-class>com.ibm.portal.samples.mvc.TemplatePortlet
+	</portlet-class>
+
+	<init-param>
+		<name>com.ibm.portal.state.url.allowrelative</name>
+		<value>true</value>
+	</init-param>
+	<init-param>
+		<name>wps.multiple.action.execution</name>
+		<value>true</value>
+	</init-param>
+	<init-param>
+		<name>wps.enforce.redirect</name>
+		<value>true</value>
+	</init-param>
+
+	<expiration-cache>3600</expiration-cache>
+
+	<supports>
+		<mime-type>text/html</mime-type>
+		<portlet-mode>VIEW</portlet-mode>
+	</supports>
+
+	<resource-bundle>com.ibm.portal.samples.mvc.TemplateResources
+	</resource-bundle>
+
+	<portlet-preferences />
+
+	<container-runtime-option>
+		<name>javax.portlet.renderHeaders</name>
+		<value>true</value>
+	</container-runtime-option>
+</portlet>
