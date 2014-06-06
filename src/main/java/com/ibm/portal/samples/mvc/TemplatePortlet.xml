@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<portlet xmlns="http://java.sun.com/xml/ns/portlet/portlet-app_2_0.xsd">
+	<portlet-name>TemplatePortlet</portlet-name>
+
+	<portlet-class>com.ibm.portal.samples.mvc.TemplatePortlet</portlet-class>
+
+	<!-- WebSphere Portal specific: indicates that the markup is written such 
+		that it can cope with relative URLs. The main requirement is to place URL 
+		only in places that are meant to contain URLs by the HTML spec, in particular 
+		do not pass URL directly into JS functions Instead always write them into 
+		markup and if a JS function requires access to the URL, first read it out 
+		of the attribute of the DOM element and pass the result to the JS function 
+		(the browser will resolve the URL to an absolute URL automatically, when 
+		reading it from the attribute). -->
+	<init-param>
+		<name>com.ibm.portal.state.url.allowrelative</name>
+		<value>true</value>
+	</init-param>
+	<!-- WebSphere Portal specific: indicates that the portlet container does 
+		not need to protect against the duplicate execution of the same action. This 
+		is important for cacheability concerns of the portlet, since with multiple 
+		action protection enabled, the markup of the portlet is uncacheable if it 
+		contains an action URL. -->
+	<init-param>
+		<name>wps.multiple.action.execution</name>
+		<value>true</value>
+	</init-param>
+	<!-- WebSphere Portal specific: indicates that the server automatically 
+		sends a redirect after an action. This is the desired pattern based on the 
+		REST model, an action should always be represented as a POST request, followed 
+		by a redirect the new state after the action. As a result all URLs in the 
+		browser history and the address bar are bookmarkable and the back button 
+		works without executing an action twice. -->
+	<init-param>
+		<name>wps.enforce.redirect</name>
+		<value>true</value>
+	</init-param>
+
+	<!-- indicate that we depend on OneUI for the styling -->
+	<init-param>
+		<name>capability.1.id</name>
+		<value>oneUI</value>
+	</init-param>
+	<init-param>
+		<name>capability.1.minValue</name>
+		<value>3.0</value>
+	</init-param>
+	<!-- if oneUI is unavailable we'd rather fail than fall back -->
+	<init-param>
+		<name>capabilities.selfManaged</name>
+		<value>false</value>
+	</init-param>
+
+	<expiration-cache>3600</expiration-cache>
+
+	<supports>
+		<mime-type>text/html</mime-type>
+		<portlet-mode>VIEW</portlet-mode>
+	</supports>
+
+	<resource-bundle>com.ibm.portal.samples.mvc.TemplateResources
+	</resource-bundle>
+
+	<portlet-preferences />
+
+	<container-runtime-option>
+		<name>javax.portlet.renderHeaders</name>
+		<value>true</value>
+	</container-runtime-option>
+</portlet>
