@@ -1,39 +1,38 @@
-Plugin Name
+WebSphere Portal Portlet Samples
 
-  Plugin introduction, description, and other relevant information
+  The project provides examples that show how to build portlets according to the {{{https://www.jcp.org/en/jsr/detail?id=286}JSR 286}}
+  specification for {{{http://www.ibm.com/developerworks/lotus/digital_experience.html}WebSphere Portal}}. 
   
+  * the {{{./template-portlet.html}Template Portlet}} provides a template for custom portlet projects
+
+* Build
+  
+  The project is based on the {{{http://maven.apache.org/}Apache Maven}} build structure. It requires
+  a maven repository to resolve the {{{./dependencies.html}dependencies}}. Most dependencies are part
+  of standard repositories, however the following have to be installed manually:
+
+* First time setup
+
+  * Install maven
+
+  * Clone the source code from the repository:
+  
+----
+  git clone https://github.com/OpenNTF/WebSpherePortalPortletSamples.git
+----
+  
+  * Switch into the cloned directory and call
+  
+----
+  mvn package
+----
+
+  * Deploy the resulting WAR file on a portal server
 
 * Goals Overview
 
-  General information about the goals.
+  General information about the typical goals:
 
-  * {{{<goal>.html}prefix:goal}} short description for this plugin goal.
-
-* Usage
-
-  General instructions on how to use the Plugin Name can be found on the {{{usage.html}usage page}}. Some more
-  specific use cases are described in the examples given below. Last but not least, users occasionally contribute
-  additional examples, tips or errata to the
-  {{{http://docs.codehaus.org/display/MAVENUSER/Plugin+Name}plugin's wiki page}}.
-
-  In case you still have questions regarding the plugin's usage, please have a look at the {{{faq.html}FAQ}} and feel
-  free to contact the {{{mail-lists.html}user mailing list}}. The posts to the mailing list are archived and could
-  already contain the answer to your question as part of an older thread. Hence, it is also worth browsing/searching
-  the {{{mail-lists.html}mail archive}}.
-
-  If you feel like the plugin is missing a feature or has a defect, you can fill a feature request or bug report in our
-  {{{issue-tracking.html}issue tracker}}. When creating a new issue, please provide a comprehensive description of your
-  concern. Especially for fixing bugs it is crucial that the developers can reproduce your problem. For this reason,
-  entire debug logs, POMs or most preferably little demo projects attached to the issue are very much appreciated.
-  Of course, patches are welcome, too. Contributors can check out the project from our
-  {{{source-repository.html}source repository}} and will find supplementary information in the
-  {{{http://maven.apache.org/guides/development/guide-helping.html}guide to helping with Maven}}. 
-
-* Examples
-
-  To provide you with better understanding of some usages of the Plugin Name,
-  you can take a look into the following examples:
-
-  * {{{examples/example-one.html}Example Description One}}
-
-  * {{{examples/example-two.html}Example Description Two}}
+  * {{{http://maven.apache.org/guides/introduction/introduction-to-the-lifecycle.html}package}}: builds the WAR file that contain the portlets
+  
+  * {{{./deploy-portlet.html}portal:deploy-portlet}}: deploys the portlets on the configured target portal server

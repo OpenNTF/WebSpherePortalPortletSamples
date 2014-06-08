@@ -13,15 +13,16 @@
       <item name="OpenNTF" href="http://openntf.org/" />
     </links>
 
-    <menu name="Maven 2.0">
+    <menu name="General">
       <item name="Introduction" href="index.html"/>
       <item name="Download" href="download.html"/>
-      <item name="Release Notes" href="release-notes.html" />
       <item name="General Information" href="about.html"/>
-      <item name="For Maven 1.x Users" href="maven1.html"/>
-      <item name="Road Map" href="roadmap.html" />
     </menu>
 
+    <menu name="Samples">
+      <item name="Template Portlet" href="template-portlet.html"/>    
+    </menu>
+    
     <menu ref="reports"/>
   </body>
 </project>
