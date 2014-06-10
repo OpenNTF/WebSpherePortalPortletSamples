@@ -1,0 +1,6 @@
+Template Portlet
+
+  Template for custom portlet projects. This portlet shows the basic structure of a 
+  portlet project, following a model-view-controller pattern. It is meant to be used as 
+  a starting point for custom projects. The sample contains an input form that shows how 
+  to use a portlet action and a counter to illustrate the concept of private render parameters. 

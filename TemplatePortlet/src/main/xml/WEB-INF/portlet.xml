@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<portlet-app id="PortletTemplate"
+	xmlns="http://java.sun.com/xml/ns/portlet/portlet-app_2_0.xsd"
+	xmlns:portal="http://www.ibm.com/xmlns/prod/websphere/portal/publicparams"
+	version="2.0">
+
+	<!-- include the portlets by reference. The reference is relative to the 
+		BASE_DIR parameter in the XSLT. -->
+	<portlet href="mvc/TemplatePortlet.xml" />
+
+</portlet-app>

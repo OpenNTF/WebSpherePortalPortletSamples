@@ -1,0 +1,8 @@
+About
+
+	The portlet samples are developed as part of the {{{http://openntf.org/}OpenNTF}} project with the 
+	goal to illustrate best practices for portlet development. They are not meant to be used as is 
+	in production environments and there is no warranty.
+	
+	Please refer to the {{{http://openntf.org/main.nsf/project.xsp?r=project/WebSphere%20Portal%20Portlet%20Samples}project page}}
+	for more information.

@@ -1,0 +1,38 @@
+WebSphere Portal Portlet Samples
+
+  The project provides examples that show how to build portlets according to the {{{https://www.jcp.org/en/jsr/detail?id=286}JSR 286}}
+  specification for {{{http://www.ibm.com/developerworks/lotus/digital_experience.html}WebSphere Portal}}. 
+  
+  * the {{{./template-portlet.html}Template Portlet}} provides a template for custom portlet projects
+
+* Build
+  
+  The project is based on the {{{http://maven.apache.org/}Apache Maven}} build structure. It requires
+  a maven repository to resolve the {{{./dependencies.html}dependencies}}. Most dependencies are part
+  of standard repositories, however the following have to be installed manually:
+
+* First time setup
+
+  * Install maven
+
+  * Clone the source code from the repository:
+  
+----
+  git clone https://github.com/OpenNTF/WebSpherePortalPortletSamples.git
+----
+  
+  * Switch into the cloned directory and call
+  
+----
+  mvn package
+----
+
+  * Deploy the resulting WAR file on a portal server
+
+* Goals Overview
+
+  General information about the typical goals:
+
+  * {{{http://maven.apache.org/guides/introduction/introduction-to-the-lifecycle.html}package}}: builds the WAR file that contain the portlets
+  
+  * {{{./deploy-portlet.html}portal:deploy-portlet}}: deploys the portlets on the configured target portal server
