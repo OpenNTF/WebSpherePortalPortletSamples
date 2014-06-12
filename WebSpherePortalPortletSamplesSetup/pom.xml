@@ -1,0 +1,135 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<artifactId>WebSpherePortalPortletSamplesSetup</artifactId>
+	<packaging>pom</packaging>
+	<name>WebSphere Portal Portlet Samples Package</name>
+
+	<parent>
+		<groupId>com.ibm.portal.samples</groupId>
+		<artifactId>WebSpherePortalPortletSamples</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+		<relativePath>../WebSpherePortalPortletSamples/pom.xml</relativePath>
+	</parent>
+
+	<dependencies>
+		<dependency>
+			<groupId>com.ibm.portal.samples</groupId>
+			<artifactId>PortletTemplateSetup</artifactId>
+			<version>${project.version}</version>
+			<classifier>pca</classifier>
+			<type>zip</type>
+		</dependency>
+
+		<dependency>
+			<groupId>com.ibm.portal.samples</groupId>
+			<artifactId>PortletTemplate</artifactId>
+			<version>${project.version}</version>
+			<classifier>pca</classifier>
+			<type>zip</type>
+		</dependency>
+
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<version>2.8</version>
+				<executions>
+					<execution>
+						<id>unpack-dependencies</id>
+						<phase>package</phase>
+						<goals>
+							<goal>unpack-dependencies</goal>
+						</goals>
+						<configuration>
+							<includeGroupIds>com.ibm.portal.samples</includeGroupIds>
+							<classifier>pca</classifier>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<version>1.7</version>
+				<executions>
+					<execution>
+						<id>listing</id>
+						<phase>package</phase>
+						<goals>
+							<goal>run</goal>
+						</goals>
+						<configuration>
+							<target>
+								<fileset dir="${project.build.directory}/dependency" id="sdd.path">
+									<include name="**/sdd.xml"/>
+								</fileset>
+								<pathconvert targetos="unix" pathsep="&lt;/sdd&gt;&lt;sdd&gt;" property="sdd.prop"
+									refid="sdd.path"/>
+								<echo file="${project.build.directory}/files.xml">&lt;files&gt;&lt;sdd&gt;${sdd.prop}&lt;/sdd&gt;&lt;/files&gt;</echo>
+							</target>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>xml-maven-plugin</artifactId>
+				<version>1.0</version>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>transform</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<transformationSets>					
+						<transformationSet>						
+							<dir>${basedir}/src/main/xml</dir>													
+							<stylesheet>${basedir}/src/main/xslt/paa.xslt</stylesheet>
+							<outputDir>${project.build.directory}/${project.build.finalName}</outputDir>
+							<parameters>
+								<parameter>
+									<name>COMPONENT_NAME</name>
+									<value>${project.artifactId}</value>
+								</parameter>
+								<parameter>
+									<name>VERSION</name>
+									<value>${project.version}</value>
+								</parameter>
+								<parameter>
+									<name>LISTING</name>
+									<value>../../../target/files.xml</value>
+								</parameter>
+							</parameters>
+						</transformationSet>
+					</transformationSets>
+				</configuration>
+			</plugin>
+			<plugin>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<version>2.4</version>
+				<configuration>
+					<descriptors>
+						<descriptor>${basedir}/src/main/assembly/paa.xml</descriptor>
+					</descriptors>
+				</configuration>
+				<executions>
+					<execution>
+						<id>make-assembly</id> <!-- this is used for inheritance merges -->
+						<phase>package</phase> <!-- bind to the packaging phase -->
+						<goals>
+							<goal>single</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+
+</project>

@@ -1,0 +1,149 @@
+<!-- 1 [content-node Z6_000000000000000000000000A0] -->
+<!-- 2 [content-node Z6_00000000000000A0BR2B300GO2] -->
+<!-- 3 [content-node Z6_GOH2G1G0K8S7B0ACM9EOP220G7] -->
+<!-- 4 [component Z7_GOH2G1G0K8S7B0ACM9EOP22080] -->
+<!-- 5 [component Z7_GOH2G1G0K8S7B0ACM9EOP22084] -->
+<!-- 6 [component Z7_GOH2G1G0K8S7B0ACM9EOP22082] -->
+<!-- 7 [component Z7_GOH2G1G0K8S7B0ACM9EOP22086] -->
+<!-- 8 [component Z7_GOH2G1G0K8S7B0ACM9EOP220O1] -->
+<!-- 9 [web-app Z1_GOH2G1G0KOHT30AC8ELGC21000 uid=PortletTemplate.webmod] -->
+<!-- 10 [portlet-app Z2_GOH2G1G0KOHT30AC8ELGC21004 name=PortletTemplate uid=PortletTemplate] -->
+<!-- 11 [servlet ZV_GOH2G1G0KOHT30AC8ELGC21002] -->
+<!-- 12 [portlet Z3_GOH2G1G0KOHT30AC8ELGC21006 name=TemplatePortlet] -->
+<!-- 13 [portletinstance Z5_GOH2G1G0K8S7B0ACM9EOP220O5] -->
+<!-- 14 [component Z7_GOH2G1G0K8S7B0ACM9EOP22081] -->
+<!-- 15 [component Z7_GOH2G1G0K8S7B0ACM9EOP220O3] -->
+<!-- 16 [portletinstance Z5_GOH2G1G0K8S7B0ACM9EOP220O7] -->
+<!-- 17 [content-node Z6_GOH2G1G0K8S7B0ACM9EOP220G6] -->
+<request build="20140424.0858D" type="update" version="8.5.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="PortalConfig_8.5.0.xsd">
+	<portal action="locate">
+		<web-app action="locate" domain="rel"
+			objectid="Z1_GOH2G1G0KOHT30AC8ELGC21000" uid="PortletTemplate.webmod">
+			<servlet action="locate" domain="rel" name="TemplatePortlet"
+				objectid="ZV_GOH2G1G0KOHT30AC8ELGC21002" />
+			<portlet-app action="locate" domain="rel" name="PortletTemplate"
+				objectid="Z2_GOH2G1G0KOHT30AC8ELGC21004" uid="PortletTemplate">
+				<portlet action="locate" domain="rel" name="TemplatePortlet"
+					objectid="Z3_GOH2G1G0KOHT30AC8ELGC21006" />
+			</portlet-app>
+		</web-app>
+		<content-node action="locate" domain="rel"
+			objectid="Z6_000000000000000000000000A0" uniquename="wps.content.root" />
+		<content-node action="locate" domain="rel"
+			objectid="Z6_00000000000000A0BR2B300GO2" uniquename="ibm.portal.Home" />
+		<content-node action="update" active="true"
+			content-parentref="Z6_00000000000000A0BR2B300GO2" domain="rel"
+			objectid="Z6_GOH2G1G0K8S7B0ACM9EOP220G6" ordinal="196808" type="label">
+			<supported-markup markup="html" update="set" />
+			<localedata locale="en">
+				<title>Portlet Samples</title>
+			</localedata>			
+		</content-node>
+		
+		<content-node action="update" active="true"
+			allportletsallowed="true" content-parentref="Z6_GOH2G1G0K8S7B0ACM9EOP220G6"
+			create-type="explicit" domain="rel" objectid="Z6_GOH2G1G0K8S7B0ACM9EOP220G7"
+			ordinal="65536" type="staticpage">
+			<localedata locale="en">
+				<title>Portlet Template</title>
+			</localedata>
+			<pagecontents display-option="inline" markup="html">
+				<content>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
+				</content>
+			</pagecontents>
+			<parameter name="com.ibm.portal.IgnoreAccessControlInCaches"
+				type="string" update="set"><![CDATA[false]]></parameter>
+			<parameter name="com.ibm.portal.bookmarkable" type="string"
+				update="set"><![CDATA[Yes]]></parameter>
+			<parameter name="com.ibm.portal.feed.remote-cache-expiry"
+				type="string" update="set"><![CDATA[86400]]></parameter>
+			<parameter name="com.ibm.portal.layout.template.expiration"
+				type="string" update="set"><![CDATA[1402272001769]]></parameter>
+			<parameter name="com.ibm.portal.layout.template.file.name.html"
+				type="string" update="set"><![CDATA[layout.html]]></parameter>
+			<parameter name="com.ibm.portal.layout.template.lastmodified"
+				type="string" update="set"><![CDATA[1402400272582]]></parameter>
+			<parameter name="com.ibm.portal.layout.template.markup"
+				type="string" update="set"><![CDATA[html]]></parameter>
+			<parameter name="com.ibm.portal.layout.template.ref" type="string"
+				update="set"><![CDATA[dav:fs-type1/themes/Portal8.5/layout-templates/2ColumnEqual/]]></parameter>
+			<parameter name="com.ibm.portal.remote-cache-expiry" type="string"
+				update="set"><![CDATA[86400]]></parameter>
+			<parameter name="com.ibm.portal.remote-cache-scope" type="string"
+				update="set"><![CDATA[NON-SHARED]]></parameter>
+			<parameter name="com.ibm.portal.static.page.file.name.html"
+				type="string" update="set"><![CDATA[layout.html]]></parameter>
+			<parameter name="param.sharing.scope.{http://ibm.connections.com/portlet}"
+				type="string" update="set"><![CDATA[ibm.portal.sharing.scope.page]]></parameter>
+			<parameter
+				name="param.sharing.scope.{http://www.ibm.com/xmlns/prod/datatype/content/resource-collections}"
+				type="string" update="set"><![CDATA[ibm.portal.sharing.scope.page]]></parameter>
+			<parameter
+				name="param.sharing.scope.{http://www.ibm.com/xmlns/prod/datatype/content}"
+				type="string" update="set"><![CDATA[ibm.portal.sharing.scope.page]]></parameter>
+			<parameter
+				name="param.sharing.scope.{http://www.ibm.com/xmlns/prod/websphere/portal/publicparams}path-info"
+				type="string" update="set"><![CDATA[ibm.portal.sharing.scope.page]]></parameter>
+			<parameter
+				name="param.sharing.scope.{http://www.ibm.com/xmlns/prod/websphere/portal/v7.0/portal-contextual-portal}"
+				type="string" update="set"><![CDATA[ibm.portal.sharing.scope.page]]></parameter>
+			<parameter
+				name="param.sharing.scope.{http://www.ibm.com/xmlns/prod/websphere/portal/v8.0/portal-contextual-portal}"
+				type="string" update="set"><![CDATA[ibm.portal.sharing.scope.page]]></parameter>
+			<access-control externalized="false"
+				owner="uid=wpsadmin,o=defaultWIMFileBasedRealm" private="false" />
+			<content-mapping-info>
+				<content-mapping content-id="gxsywmg-jpdkfaerbferfeozexejyrxkcuou"
+					default="false" system="true" />
+			</content-mapping-info>
+			<component action="update" active="true" deletable="undefined"
+				domain="rel" modifiable="undefined" objectid="Z7_GOH2G1G0K8S7B0ACM9EOP22080"
+				ordinal="65536" orientation="V" skinref="undefined" type="container"
+				width="undefined">
+				<component action="update" active="true" deletable="undefined"
+					domain="rel" modifiable="undefined" objectid="Z7_GOH2G1G0K8S7B0ACM9EOP22084"
+					ordinal="65536" orientation="V" skinref="undefined" type="container"
+					width="undefined" />
+				<component action="update" active="true" deletable="undefined"
+					domain="rel" modifiable="undefined" objectid="Z7_GOH2G1G0K8S7B0ACM9EOP22082"
+					ordinal="131072" orientation="H" skinref="undefined" type="container"
+					width="undefined">
+					<parameter name="com.ibm.portal.layoutnode.localname"
+						type="string" update="set"><![CDATA[ibmHiddenWidgets]]></parameter>
+					<parameter name="css-classes" type="string" update="set"><![CDATA[wpthemeFull ibmDndRow wpthemeCol12of12 hiddenWidgetsContainer]]></parameter>
+				</component>
+				<component action="update" active="true" deletable="undefined"
+					domain="rel" modifiable="undefined" objectid="Z7_GOH2G1G0K8S7B0ACM9EOP22086"
+					ordinal="196608" orientation="H" skinref="undefined" type="container"
+					width="undefined">
+					<parameter name="com.ibm.portal.layoutnode.localname"
+						type="string" update="set"><![CDATA[ibmMainContainer]]></parameter>
+					<parameter name="css-classes" type="string" update="set"><![CDATA[wpthemeLeft wpthemePrimaryContainer wpthemeCol ibmDndColumn wpthemeCol6of12 wpthemeMedium]]></parameter>
+					<component action="update" active="true" deletable="undefined"
+						domain="rel" modifiable="undefined" objectid="Z7_GOH2G1G0K8S7B0ACM9EOP220O1"
+						ordinal="65536" skinref="undefined" type="control" width="undefined">
+						<portletinstance action="update" domain="rel"
+							objectid="Z5_GOH2G1G0K8S7B0ACM9EOP220O5" portletref="Z3_GOH2G1G0KOHT30AC8ELGC21006" />
+					</component>
+				</component>
+				<component action="update" active="true" deletable="undefined"
+					domain="rel" modifiable="undefined" objectid="Z7_GOH2G1G0K8S7B0ACM9EOP22081"
+					ordinal="262144" orientation="H" skinref="undefined" type="container"
+					width="undefined">
+					<parameter name="com.ibm.portal.layoutnode.localname"
+						type="string" update="set"><![CDATA[secondary]]></parameter>
+					<parameter name="css-classes" type="string" update="set"><![CDATA[wpthemeLeft wpthemeCol wpthemeSecondaryContainer ibmDndColumn wpthemeCol6of12 wpthemeMedium]]></parameter>
+					<component action="update" active="true" deletable="undefined"
+						domain="rel" modifiable="undefined" objectid="Z7_GOH2G1G0K8S7B0ACM9EOP220O3"
+						ordinal="65536" skinref="undefined" type="control" width="undefined">
+						<portletinstance action="update" domain="rel"
+							objectid="Z5_GOH2G1G0K8S7B0ACM9EOP220O7" portletref="Z3_GOH2G1G0KOHT30AC8ELGC21006" />
+					</component>
+				</component>
+			</component>
+		</content-node>
+	</portal>
+	<status element="all" result="ok" />
+</request>

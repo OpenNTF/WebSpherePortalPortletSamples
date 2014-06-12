@@ -1,0 +1,5 @@
+
+The following files have been resolved:
+   com.ibm.portal.samples:PortletTemplate:zip:pca:0.0.1-SNAPSHOT:compile
+   com.ibm.portal.samples:PortletTemplateSetup:zip:pca:0.0.1-SNAPSHOT:compile
+

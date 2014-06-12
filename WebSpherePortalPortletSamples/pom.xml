@@ -50,6 +50,9 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<paa.component>.</paa.component>
+		<paa.component.installableApps>installableApps</paa.component.installableApps>
+		<paa.component.portlets>${paa.component.installableApps}/portlets</paa.component.portlets>
 	</properties>
 
 	<!-- common dependencies for all children -->
@@ -110,6 +113,12 @@
 	<build>
 		<plugins>
 			<plugin>
+				<groupId>com.ibm.portal</groupId>
+				<artifactId>portal-maven-plugin</artifactId>
+				<version>1.0</version>
+				<extensions>true</extensions>
+			</plugin>
+			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-pdf-plugin</artifactId>
 				<version>1.2</version>
@@ -167,9 +176,11 @@
 		</plugins>
 	</reporting>
 
+	<url>http://openntf.org/main.nsf/project.xsp?r=project/WebSphere%20Portal%20Portlet%20Samples</url>
+
 	<modules>
+		<module>../WebSpherePortalPortletSamplesSetup</module>
+		<module>../TemplatePortletSetup</module>
 		<module>../TemplatePortlet</module>
 	</modules>
-	<url>http://openntf.org/main.nsf/project.xsp?r=project/WebSphere%20Portal%20Portlet%20Samples</url>
-	
 </project>
