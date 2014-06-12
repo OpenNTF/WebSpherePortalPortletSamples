@@ -4,6 +4,8 @@
 	<artifactId>PortletTemplate</artifactId>
 	<packaging>war</packaging>
 
+	<name>Portlet Template</name>
+
 	<parent>
 		<groupId>com.ibm.portal.samples</groupId>
 		<artifactId>WebSpherePortalPortletSamples</artifactId>
@@ -40,7 +42,7 @@
 				<configuration>
 					<transformationSets>
 						<transformationSet>
-							<dir>${basedir}/src/main/xml</dir>
+							<dir>${basedir}/src/main/xml/portlet</dir>
 							<stylesheet>${basedir}/src/main/xslt/portlet.xslt</stylesheet>
 							<outputDir>${project.build.directory}/${project.build.finalName}</outputDir>
 							<parameters>
@@ -50,10 +52,45 @@
 								</parameter>
 							</parameters>
 						</transformationSet>
+
+						<transformationSet>
+							<dir>${basedir}/src/main/xml/pca</dir>
+							<stylesheet>${basedir}/src/main/xslt/pca.xslt</stylesheet>
+							<outputDir>${project.build.directory}/${project.build.finalName}-pca</outputDir>
+							<parameters>
+								<parameter>
+									<name>COMPONENT_NAME</name>
+									<value>${project.artifactId}</value>
+								</parameter>
+								<parameter>
+									<name>VERSION</name>
+									<value>${project.version}</value>
+								</parameter>
+							</parameters>
+						</transformationSet>
 					</transformationSets>
 				</configuration>
 			</plugin>
+
+			<plugin>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<version>2.4</version>
+				<configuration>
+					<descriptors>
+						<descriptor>src/main/assembly/component.xml</descriptor>
+					</descriptors>
+					<attach>true</attach>
+				</configuration>
+				<executions>
+					<execution>
+						<id>make-assembly</id> <!-- this is used for inheritance merges -->
+						<phase>package</phase> <!-- bind to the packaging phase -->
+						<goals>
+							<goal>single</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
 		</plugins>
 	</build>
-	<name>Portlet Template</name>
 </project>
