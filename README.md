@@ -10,7 +10,9 @@ OPENNTF
 
 BUILD
 
-	mvn clean package
+	git clone https://github.com/OpenNTF/WebSpherePortalPortletSamples.git
+	cd WebSpherePortalPortletSamples
+	mvn package
     
 INSTALL
 	
@@ -22,3 +24,4 @@ UNINSTALL
 	./ConfigEngine.sh remove-paa -DappName=com.ibm.portal.samples-WebSpherePortalPortletSamplesSetup
 	./ConfigEngine.sh uninstall-paa -DappName=com.ibm.portal.samples-WebSpherePortalPortletSamplesSetup
 	./ConfigEngine.sh delete-paa -DappName=com.ibm.portal.samples-WebSpherePortalPortletSamplesSetup
+		
