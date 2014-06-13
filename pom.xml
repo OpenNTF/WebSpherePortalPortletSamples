@@ -226,6 +226,7 @@
 	</reporting>
 
 	<modules>
+		<module>WebSpherePortalPortletSamplesOpenNTF</module>
 		<module>WebSpherePortalPortletSamplesSetup</module>
 		<module>TemplatePortletSetup</module>
 		<module>TemplatePortlet</module>

@@ -16,7 +16,7 @@ BUILD
     
 INSTALL
 	
-	./ConfigEngine.sh install-paa -DPAALocation=WebSpherePortalPortletSamplesSetup-paa.zip
+	./ConfigEngine.sh install-paa -DPAALocation=WebSpherePortalPortletSamplesSetup.paa
 	./ConfigEngine.sh deploy-paa -DappName=com.ibm.portal.samples-WebSpherePortalPortletSamplesSetup
 	
 UNINSTALL
