@@ -32,12 +32,21 @@
 	<scm>
 		<url>https://github.com/OpenNTF/WebSpherePortalPortletSamples</url>
 		<connection>scm:git:git://github.com/OpenNTF/WebSpherePortalPortletSamples.git</connection>
+		<developerConnection>scm:git:git://github.com/OpenNTF/WebSpherePortalPortletSamples.git</developerConnection>
 	</scm>
 
 	<issueManagement>
 		<url>https://github.com/OpenNTF/WebSpherePortalPortletSamples/issues</url>
 		<system>GitHub Issues</system>
 	</issueManagement>
+
+	<distributionManagement>
+		<site>
+			<id>github-pages-site</id>
+			<name>Deployment through GitHub's site deployment plugin</name>
+			<url>site/${project.version}</url>
+		</site>
+	</distributionManagement>
 
 	<developers>
 		<developer>
@@ -56,6 +65,7 @@
 	</developers>
 
 	<properties>
+		<github.global.server>github</github.global.server>
 		<maven.build.timestamp.format>yyyy-MM-dd'T'HH:mm:ss.SSSZ</maven.build.timestamp.format>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<paa.component>.</paa.component>
@@ -166,6 +176,35 @@
 					</archive>
 				</configuration>
 			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-site-plugin</artifactId>
+				<version>3.3</version>
+				<configuration>
+					<skipDeploy>true</skipDeploy>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>com.github.github</groupId>
+				<artifactId>site-maven-plugin</artifactId>
+				<version>0.9</version>
+				<configuration>
+					<message>Creating site for ${project.artifactId},
+						${project.version}</message>
+					<!-- this does the trick to place every module in the correct subfolder -->
+					<path>${project.distributionManagement.site.url}</path>
+					<merge>true</merge>
+				</configuration>
+				<executions>
+					<execution>
+						<id>github-site</id>
+						<goals>
+							<goal>site</goal>
+						</goals>
+						<phase>site-deploy</phase>
+					</execution>
+				</executions>
+			</plugin>
 		</plugins>
 	</build>
 
@@ -191,4 +230,5 @@
 		<module>TemplatePortletSetup</module>
 		<module>TemplatePortlet</module>
 	</modules>
+
 </project>
