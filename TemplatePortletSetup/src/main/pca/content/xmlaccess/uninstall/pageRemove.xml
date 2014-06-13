@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<request type="update" version="8.0.0.0" create-oids="true"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="PortalConfig_8.0.0.xsd">
+	<!-- Sample for deleting the page with unique name 'wps.si'. NOTE: This 
+		sample expects that a page with the unique name 'wps.si' exists. For example 
+		the pageImport.xml sample creates such a page. -->
+	<portal action="locate">
+
+		<content-node action="delete" objectid="Z6_GOH2G1G0K8S7B0ACM9EOP220G7" />
+
+	</portal>
+</request>

@@ -10,7 +10,7 @@
 		<groupId>com.ibm.portal.samples</groupId>
 		<artifactId>WebSpherePortalPortletSamples</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
-		<relativePath>../WebSpherePortalPortletSamples/pom.xml</relativePath>
+		<relativePath>../pom.xml</relativePath>
 	</parent>
 
 	<!-- most dependencies are inherited, just list the project specific ones -->
@@ -33,7 +33,7 @@
 				<version>1.0</version>
 				<executions>
 					<execution>
-						<phase>package</phase>
+						<phase>prepare-package</phase>
 						<goals>
 							<goal>transform</goal>
 						</goals>
@@ -41,6 +41,7 @@
 				</executions>
 				<configuration>
 					<transformationSets>
+
 						<transformationSet>
 							<dir>${basedir}/src/main/xml/portlet</dir>
 							<stylesheet>${basedir}/src/main/xslt/portlet.xslt</stylesheet>
@@ -59,12 +60,20 @@
 							<outputDir>${project.build.directory}/${project.build.finalName}-pca</outputDir>
 							<parameters>
 								<parameter>
-									<name>COMPONENT_NAME</name>
+									<name>GROUP_ID</name>
+									<value>${project.groupId}</value>
+								</parameter>
+								<parameter>
+									<name>ARTIFACT_ID</name>
 									<value>${project.artifactId}</value>
 								</parameter>
 								<parameter>
 									<name>VERSION</name>
 									<value>${project.version}</value>
+								</parameter>
+								<parameter>
+									<name>BUILD_DATE</name>
+									<value>${maven.build.timestamp}</value>
 								</parameter>
 							</parameters>
 						</transformationSet>

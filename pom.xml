@@ -8,6 +8,8 @@
 	<packaging>pom</packaging>
 	<name>WebSphere Portal Portlet Samples</name>
 
+    <url>http://openntf.org/main.nsf/project.xsp?r=project/WebSphere%20Portal%20Portlet%20Samples</url>
+
 	<organization>
 		<name>IBM Corporation</name>
 		<url>http://www.ibm.com</url>
@@ -17,8 +19,13 @@
 		<license>
 			<name>Apache License, Version 2.0</name>
 			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
-			<distribution>repo</distribution>
+			<distribution>manual</distribution>
 			<comments>A business-friendly OSS license</comments>
+		</license>
+		<license>
+			<name>OpenNTF Alliance</name>
+			<url>NOTICE</url>
+			<distribution>manual</distribution>
 		</license>
 	</licenses>
 
@@ -49,8 +56,10 @@
 	</developers>
 
 	<properties>
+		<maven.build.timestamp.format>yyyy-MM-dd'T'HH:mm:ss.SSSZ</maven.build.timestamp.format>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<paa.component>.</paa.component>
+		<paa.components>components</paa.components>
 		<paa.component.installableApps>installableApps</paa.component.installableApps>
 		<paa.component.portlets>${paa.component.installableApps}/portlets</paa.component.portlets>
 	</properties>
@@ -176,11 +185,9 @@
 		</plugins>
 	</reporting>
 
-	<url>http://openntf.org/main.nsf/project.xsp?r=project/WebSphere%20Portal%20Portlet%20Samples</url>
-
 	<modules>
-		<module>../WebSpherePortalPortletSamplesSetup</module>
-		<module>../TemplatePortletSetup</module>
-		<module>../TemplatePortlet</module>
+		<module>WebSpherePortalPortletSamplesSetup</module>
+		<module>TemplatePortletSetup</module>
+		<module>TemplatePortlet</module>
 	</modules>
 </project>

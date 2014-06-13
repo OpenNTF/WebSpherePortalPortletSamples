@@ -9,10 +9,11 @@
 		<groupId>com.ibm.portal.samples</groupId>
 		<artifactId>WebSpherePortalPortletSamples</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
-		<relativePath>../WebSpherePortalPortletSamples/pom.xml</relativePath>
+		<relativePath>../pom.xml</relativePath>
 	</parent>
 
 	<dependencies>
+	
 		<dependency>
 			<groupId>com.ibm.portal.samples</groupId>
 			<artifactId>PortletTemplateSetup</artifactId>
@@ -28,7 +29,7 @@
 			<classifier>pca</classifier>
 			<type>zip</type>
 		</dependency>
-
+		
 	</dependencies>
 
 	<build>
@@ -38,15 +39,21 @@
 				<artifactId>maven-dependency-plugin</artifactId>
 				<version>2.8</version>
 				<executions>
+					<!-- We dump the build order into a file. The output will be sorted 
+						topologically, so it matches the order in which we have to install the components 
+						in the PAA. To create the sdd.xml file for the PAA we need to convert the 
+						textual description of the build order into an XML format. This is done in 
+						the following ant step. -->
 					<execution>
-						<id>unpack-dependencies</id>
+						<id>build-order</id>
 						<phase>package</phase>
 						<goals>
-							<goal>unpack-dependencies</goal>
+							<goal>list</goal>
 						</goals>
 						<configuration>
 							<includeGroupIds>com.ibm.portal.samples</includeGroupIds>
 							<classifier>pca</classifier>
+							<outputFile>${project.build.directory}/dependencies.txt</outputFile>
 						</configuration>
 					</execution>
 				</executions>
@@ -56,20 +63,27 @@
 				<artifactId>maven-antrun-plugin</artifactId>
 				<version>1.7</version>
 				<executions>
+					<!-- Convert the textual description of the build order into an XML 
+						file. The regexp based approach is a little pedestrian, suggestions for a 
+						better solution are welcome. Note that the resulting XML file contains one 
+						empty dependency element because of simplicity reasons. This has to be filtered 
+						out by the XSLT. -->
 					<execution>
-						<id>listing</id>
+						<id>build-order-xml</id>
 						<phase>package</phase>
 						<goals>
 							<goal>run</goal>
 						</goals>
 						<configuration>
 							<target>
-								<fileset dir="${project.build.directory}/dependency" id="sdd.path">
-									<include name="**/sdd.xml"/>
-								</fileset>
-								<pathconvert targetos="unix" pathsep="&lt;/sdd&gt;&lt;sdd&gt;" property="sdd.prop"
-									refid="sdd.path"/>
-								<echo file="${project.build.directory}/files.xml">&lt;files&gt;&lt;sdd&gt;${sdd.prop}&lt;/sdd&gt;&lt;/files&gt;</echo>
+								<property name="tmp.dependencies"
+									location="${project.build.directory}/dependencies.txt" />
+								<replaceregexp match="\s{3}([^:]*):([^:]*):.*|^(.*):$"
+									replace="&lt;!-- \3 --&gt;&lt;dependency groupId=&quot;\1&quot; artifactId=&quot;\2&quot;/&gt;"
+									flags="g" byline="true" file="${tmp.dependencies}" />
+								<loadfile property="tmp.dependencies.content" srcFile="${tmp.dependencies}" />
+								<echo file="${tmp.dependencies}">
+									&lt;dependencies&gt;${tmp.dependencies.content}&lt;/dependencies&gt; </echo>
 							</target>
 						</configuration>
 					</execution>
@@ -88,23 +102,31 @@
 					</execution>
 				</executions>
 				<configuration>
-					<transformationSets>					
-						<transformationSet>						
-							<dir>${basedir}/src/main/xml</dir>													
+					<transformationSets>
+						<transformationSet>
+							<dir>${basedir}/src/main/xml</dir>
 							<stylesheet>${basedir}/src/main/xslt/paa.xslt</stylesheet>
 							<outputDir>${project.build.directory}/${project.build.finalName}</outputDir>
 							<parameters>
 								<parameter>
-									<name>COMPONENT_NAME</name>
+									<name>ARTIFACT_ID</name>
 									<value>${project.artifactId}</value>
+								</parameter>
+								<parameter>
+									<name>GROUP_ID</name>
+									<value>${project.groupId}</value>
 								</parameter>
 								<parameter>
 									<name>VERSION</name>
 									<value>${project.version}</value>
 								</parameter>
 								<parameter>
-									<name>LISTING</name>
-									<value>../../../target/files.xml</value>
+									<name>BUILD_DATE</name>
+									<value>${maven.build.timestamp}</value>
+								</parameter>
+								<parameter>
+									<name>DEPENDENCIES</name>
+									<value>../../../target/dependencies.txt</value>
 								</parameter>
 							</parameters>
 						</transformationSet>

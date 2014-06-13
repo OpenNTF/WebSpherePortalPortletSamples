@@ -10,15 +10,17 @@
 		indent="yes" />
 
 	<!-- name of the component to include -->
-	<xsl:param name="COMPONENT_NAME" />
+	<xsl:param name="ARTIFACT_ID" />
+	<xsl:param name="GROUP_ID" />
 	<xsl:param name="VERSION" />
-	<xsl:param name="LISTING" />
+	<xsl:param name="DEPENDENCIES" />
+	<xsl:param name="BUILD_DATE" />
 
 	<xsl:template match="component">
 
-		<xsl:variable name="NAME" select="$COMPONENT_NAME" />
+		<xsl:variable name="NAME" select="concat($GROUP_ID, '-', $ARTIFACT_ID)" />
 
-		<iudd:iudd>
+		<iudd:iudd buildDate="{$BUILD_DATE}">
 			<packageIdentity contentType="Assembly">
 				<name>
 					<xsl:value-of select="$NAME" />
@@ -26,7 +28,7 @@
 				<version>
 					<xsl:value-of select="$VERSION" />
 				</version>
-				<displayName key="d0001" default="{$NAME}" />
+				<displayName key="d0001" default="{$ARTIFACT_ID}" />
 				<manufacturer>
 					<displayName key="AC_01" default="IBM" />
 				</manufacturer>
@@ -48,21 +50,23 @@
 							<parameter name="installLocation" defaultValue="/usr/dummy.offr.1" />
 						</parameters>
 					</variables>
-					<xsl:apply-templates select="document($LISTING)" />
+ 					<xsl:apply-templates select="document($DEPENDENCIES)" />
 				</rootIU>
 			</content>
 
 		</iudd:iudd>
 	</xsl:template>
 
-	<xsl:template match="files">
+	<xsl:template match="dependencies">
 		<xsl:apply-templates />
 	</xsl:template>
 
-	<xsl:template match="sdd">
-		<xsl:variable name="name"
-			select="document(concat('file:///', text()))/iudd:iudd/packageIdentity/name" />
-		<containedPackage id="{$name}" pathname="{$name}/sdd.xml" />
+	<xsl:template match="dependency">
+		<xsl:if test="string(@artifactId)">
+			<xsl:variable name="name"
+				select="concat('components/', @groupId, '-', @artifactId)" />
+			<containedPackage id="{$name}" pathname="{$name}/sdd.xml" />
+		</xsl:if>
 	</xsl:template>
 
 </xsl:stylesheet>

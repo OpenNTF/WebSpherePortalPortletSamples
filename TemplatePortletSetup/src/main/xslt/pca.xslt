@@ -10,15 +10,17 @@
 		indent="yes" />
 
 	<!-- name of the component to include -->
-	<xsl:param name="COMPONENT_NAME" />
+	<xsl:param name="ARTIFACT_ID" />
+	<xsl:param name="GROUP_ID" />
 	<xsl:param name="VERSION" />
+	<xsl:param name="BUILD_DATE" />
 
 	<xsl:template match="component">
 
 		<xsl:variable name="NAME"
-			select="concat('components/', $COMPONENT_NAME)" />
+			select="concat('components/', $GROUP_ID, '-', $ARTIFACT_ID)" />
 
-		<iudd:iudd>
+		<iudd:iudd buildDate="{$BUILD_DATE}">
 			<packageIdentity contentType="Component">
 				<name>
 					<xsl:value-of select="$NAME" />
@@ -26,7 +28,7 @@
 				<version>
 					<xsl:value-of select="$VERSION" />
 				</version>
-				<displayName key="d0001" default="{$NAME}" />
+				<displayName key="d0001" default="{$ARTIFACT_ID}" />
 				<manufacturer>
 					<displayName key="AC_01" default="IBM" />
 				</manufacturer>

@@ -6,18 +6,43 @@
 	<formats>
 		<format>zip</format>
 	</formats>
-	<baseDirectory>${project.artifactId}</baseDirectory>
+	<baseDirectory>${project.groupId}-${project.artifactId}</baseDirectory>
 	<includeBaseDirectory>true</includeBaseDirectory>
 
 	<fileSets>
+		<!-- include the project licenses -->
 		<fileSet>
-			<directory>${project.build.directory}/dependency</directory>
-			<outputDirectory>components</outputDirectory>
+			<directory>${project.basedir}/..</directory>
+			<outputDirectory>/</outputDirectory>
+			<includes>
+				<include>README*</include>
+				<include>LICENSE*</include>
+				<include>NOTICE*</include>
+			</includes>
 		</fileSet>
+		<!-- include the sdd.xml -->
 		<fileSet>
 			<directory>${project.build.directory}/${project.build.finalName}</directory>
 			<outputDirectory>.</outputDirectory>
 		</fileSet>
 	</fileSets>
+
+	<dependencySets>
+		<!-- include the dependent components -->
+		<dependencySet>
+			<includes>
+				<include>*:pca*</include>
+			</includes>
+			<outputDirectory>components</outputDirectory>
+			<unpack>true</unpack>
+		</dependencySet>
+		<!-- include the site documentation -->
+		<dependencySet>
+			<includes>
+				<include>*:site*</include>
+			</includes>
+			<outputDirectory>documentation</outputDirectory>
+		</dependencySet>
+	</dependencySets>
 
 </assembly>

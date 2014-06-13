@@ -6,7 +6,7 @@
 	<formats>
 		<format>zip</format>
 	</formats>
-	<baseDirectory>${project.artifactId}</baseDirectory>
+	<baseDirectory>${project.groupId}-${project.artifactId}</baseDirectory>
 	<includeBaseDirectory>true</includeBaseDirectory>
 	<fileSets>
 		<fileSet>
