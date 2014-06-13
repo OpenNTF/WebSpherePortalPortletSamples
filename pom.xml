@@ -8,7 +8,7 @@
 	<packaging>pom</packaging>
 	<name>WebSphere Portal Portlet Samples</name>
 
-    <url>http://openntf.org/main.nsf/project.xsp?r=project/WebSphere%20Portal%20Portlet%20Samples</url>
+	<url>http://openntf.org/main.nsf/project.xsp?r=project/WebSphere%20Portal%20Portlet%20Samples</url>
 
 	<organization>
 		<name>IBM Corporation</name>
@@ -60,6 +60,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<paa.component>.</paa.component>
 		<paa.components>components</paa.components>
+		<paa.documentation>documentation</paa.documentation>
 		<paa.component.installableApps>installableApps</paa.component.installableApps>
 		<paa.component.portlets>${paa.component.installableApps}/portlets</paa.component.portlets>
 	</properties>

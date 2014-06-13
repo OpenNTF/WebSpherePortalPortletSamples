@@ -13,7 +13,7 @@
 	</parent>
 
 	<dependencies>
-	
+
 		<dependency>
 			<groupId>com.ibm.portal.samples</groupId>
 			<artifactId>PortletTemplateSetup</artifactId>
@@ -29,7 +29,7 @@
 			<classifier>pca</classifier>
 			<type>zip</type>
 		</dependency>
-		
+
 	</dependencies>
 
 	<build>

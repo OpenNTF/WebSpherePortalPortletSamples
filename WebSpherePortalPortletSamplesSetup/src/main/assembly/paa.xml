@@ -23,7 +23,7 @@
 		<!-- include the sdd.xml -->
 		<fileSet>
 			<directory>${project.build.directory}/${project.build.finalName}</directory>
-			<outputDirectory>.</outputDirectory>
+			<outputDirectory>/</outputDirectory>
 		</fileSet>
 	</fileSets>
 
@@ -33,7 +33,7 @@
 			<includes>
 				<include>*:pca*</include>
 			</includes>
-			<outputDirectory>components</outputDirectory>
+			<outputDirectory>${paa.components}</outputDirectory>
 			<unpack>true</unpack>
 		</dependencySet>
 		<!-- include the site documentation -->
@@ -41,7 +41,7 @@
 			<includes>
 				<include>*:site*</include>
 			</includes>
-			<outputDirectory>documentation</outputDirectory>
+			<outputDirectory>${documentation}</outputDirectory>
 		</dependencySet>
 	</dependencySets>
 
