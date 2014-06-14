@@ -1,10 +1,10 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<artifactId>PortletTemplate</artifactId>
+	<artifactId>MailPortlets</artifactId>
 	<packaging>war</packaging>
 
-	<name>Portlet Template</name>
+	<name>Mail Portlets</name>
 
 	<parent>
 		<groupId>com.ibm.portal.samples</groupId>
@@ -15,7 +15,7 @@
 
 	<!-- most dependencies are inherited, just list the project specific ones -->
 	<dependencies>
-
+	
 		<dependency>
 			<groupId>com.ibm.portal.samples</groupId>
 			<artifactId>PortletSamplesUtils</artifactId>
@@ -23,9 +23,23 @@
 		</dependency>
 
 		<dependency>
-			<groupId>commons-fileupload</groupId>
-			<artifactId>commons-fileupload</artifactId>
-			<version>[1.3,)</version>
+			<groupId>com.ibm.portal</groupId>
+			<artifactId>public-spi</artifactId>
+			<version>8.1</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>was</groupId>
+			<artifactId>was_public</artifactId>
+			<version>7.0</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>javax.mail</groupId>
+			<artifactId>mail</artifactId>
+			<version>1.4.5</version>
 			<scope>provided</scope>
 		</dependency>
 

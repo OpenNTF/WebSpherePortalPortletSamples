@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<project name="WebSphere Portal Portlet Samples">
+  <bannerLeft>
+    <name>Maven</name>
+    <src>http://maven.apache.org/images/apache-maven-project.png</src>
+    <href>https://github.com/OpenNTF/WebSpherePortalPortletSamples</href>
+  </bannerLeft>
+  <bannerRight>
+    <src>images/ibm-logo.png</src>
+  </bannerRight>
+  <body>
+    <links>
+      <item name="OpenNTF" href="http://openntf.org/" />
+    </links>
+
+    <menu name="General">
+      <item name="Introduction" href="index.html"/>
+      <item name="Download" href="download.html"/>
+      <item name="General Information" href="about.html"/>
+    </menu>
+
+    <menu name="Samples">
+      <item name="Template Portlet" href="template-portlet.html"/>    
+    </menu>
+    
+    <menu ref="reports"/>
+  </body>
+</project>

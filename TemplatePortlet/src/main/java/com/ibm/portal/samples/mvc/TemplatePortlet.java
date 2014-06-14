@@ -33,6 +33,7 @@ import javax.portlet.ResourceResponse;
 
 import com.ibm.portal.samples.common.Marshaller;
 import com.ibm.portal.samples.common.PrivateParameterMarshaller;
+import com.ibm.portal.samples.common.PublicParameterMarshaller;
 import com.ibm.portal.samples.mvc.controller.TemplateController;
 import com.ibm.portal.samples.mvc.model.TemplateActions;
 import com.ibm.portal.samples.mvc.model.TemplateModel;
@@ -279,6 +280,18 @@ public class TemplatePortlet extends GenericPortlet {
 			public Marshaller getPrivateParameterMarshaller() {
 				// decide how to marshal private parameters
 				return PrivateParameterMarshaller.SINGLETON;
+			}
+
+			/*
+			 * (non-Javadoc)
+			 * 
+			 * @see com.ibm.portal.samples.common.AbstractModel.Dependencies#
+			 * getPublicParameterMarshaller()
+			 */
+			@Override
+			public Marshaller getPublicParameterMarshaller() {
+				// decide how to marshal private parameters
+				return PublicParameterMarshaller.SINGLETON;
 			}
 
 			// implement your getters here

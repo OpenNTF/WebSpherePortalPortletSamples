@@ -47,6 +47,17 @@ public interface Marshaller {
 	String marshalInt(final int aRaw);
 
 	/**
+	 * Converts a long into a transfer string representation.
+	 * 
+	 * @param aRaw
+	 *            the long value
+	 * @return the transfer string representation
+	 * 
+	 * @see #unmarshalLong(String, int)
+	 */
+	String marshalLong(final long aRaw);
+
+	/**
 	 * Converts a string into a transfer string representation.
 	 * 
 	 * @param aRaw
@@ -87,6 +98,19 @@ public interface Marshaller {
 	 * @see #marshalInt(int)
 	 */
 	int unmarshalInt(String aToken, int aDefault);
+
+	/**
+	 * Decodes a transfer string representation into a long
+	 * 
+	 * @param aToken
+	 *            transfer string to decode
+	 * @param aDefault
+	 *            default value, used in case of an error or a missing value
+	 * @return the decoded long
+	 * 
+	 * @see #marshalLong(long)
+	 */
+	long unmarshalLong(String aToken, long aDefault);
 
 	/**
 	 * Decodes a transfer string representation into a string value

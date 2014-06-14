@@ -45,6 +45,16 @@ public class PublicParameterMarshaller extends AbstractMarshaller {
 	/*
 	 * (non-Javadoc)
 	 * 
+	 * @see com.ibm.portal.samples.common.Marshaller#marshalLong(long)
+	 */
+	@Override
+	public String marshalLong(final long aRaw) {
+		return Long.toString(aRaw);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see
 	 * com.ibm.portal.samples.common.Marshaller#unmarshalInt(java.lang.String,
 	 * int)
@@ -58,4 +68,19 @@ public class PublicParameterMarshaller extends AbstractMarshaller {
 		}
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.ibm.portal.samples.common.Marshaller#unmarshalLong(java.lang.String,
+	 * long)
+	 */
+	@Override
+	public long unmarshalLong(final String aToken, final long aDefault) {
+		try {
+			return (aToken != null) ? Long.parseLong(aToken) : aDefault;
+		} catch (final Throwable th) {
+			return aDefault;
+		}
+	}
 }

@@ -26,7 +26,7 @@ import javax.portlet.PortletResponse;
 import javax.portlet.PortletURL;
 import javax.portlet.StateAwareResponse;
 
-import com.ibm.portal.samples.common.Marshaller;
+import com.ibm.portal.samples.common.AbstractModel;
 import com.ibm.portal.samples.mvc.controller.TemplateController;
 
 /**
@@ -44,19 +44,12 @@ import com.ibm.portal.samples.mvc.controller.TemplateController;
  * 
  * @author cleue
  */
-public class TemplateModel implements Cloneable {
+public class TemplateModel extends AbstractModel implements Cloneable {
 
 	/**
 	 * Representation to dependencies on external services
 	 */
-	public interface Dependencies {
-
-		/**
-		 * Marshaller for private render parameters
-		 * 
-		 * @return the marshaller
-		 */
-		Marshaller getPrivateParameterMarshaller();
+	public interface Dependencies extends AbstractModel.Dependencies {
 
 		/**
 		 * TODO add dependencies via parameterless getter methods
@@ -137,11 +130,6 @@ public class TemplateModel implements Cloneable {
 	private Boolean bSampleText;
 
 	/**
-	 * 
-	 */
-	private final PortletRequest request;
-
-	/**
 	 * sample navigational state
 	 */
 	private int sampleInt;
@@ -150,11 +138,6 @@ public class TemplateModel implements Cloneable {
 	 * sample navigational state
 	 */
 	private String sampleText;
-
-	/**
-	 * controls how private parameters are marshalled
-	 */
-	private final Marshaller privateMarshaller;
 
 	/**
 	 * Initializes the model from a portlet request
@@ -169,6 +152,8 @@ public class TemplateModel implements Cloneable {
 	public TemplateModel(final PortletRequest aRequest,
 			final PortletResponse aResponse, final PortletConfig aConfig,
 			final Dependencies aDeps) {
+		// default
+		super(aRequest, aDeps);
 		// sanity check
 		assert aRequest != null;
 		assert aResponse != null;
@@ -180,8 +165,6 @@ public class TemplateModel implements Cloneable {
 			LOGGER.entering(LOG_CLASS, LOG_METHOD);
 		}
 		// TODO copy dependencies from the interface into fields
-		request = aRequest;
-		privateMarshaller = aDeps.getPrivateParameterMarshaller();
 		// exit trace
 		if (bIsLogging) {
 			LOGGER.exiting(LOG_CLASS, LOG_METHOD);
@@ -195,11 +178,8 @@ public class TemplateModel implements Cloneable {
 	 *            the model
 	 */
 	protected TemplateModel(final TemplateModel aModel) {
-		/**
-		 * Copies the static portion of the data
-		 */
-		request = aModel.request;
-		privateMarshaller = aModel.privateMarshaller;
+		// default
+		super(aModel);
 		/**
 		 * copies the resettable portion of the private data. Do not call the
 		 * copy method because it might have been overridden by a subclass.
@@ -311,10 +291,8 @@ public class TemplateModel implements Cloneable {
 			LOGGER.entering(LOG_CLASS, LOG_METHOD);
 		}
 		// encode the text
-		aURL.setParameter(privateMarshaller.marshalEnum(PARAMS.SAMPLE_TEXT),
-				privateMarshaller.marshalString(getSampleText()));
-		aURL.setParameter(privateMarshaller.marshalEnum(PARAMS.SAMPLE_INT),
-				privateMarshaller.marshalInt(getSampleInt()));
+		encode(aURL, PARAMS.SAMPLE_TEXT, getSampleText(), DEFAULT_SAMPLE_TEXT);
+		encode(aURL, PARAMS.SAMPLE_INT, getSampleInt(), DEFAULT_SAMPLE_INT);
 		// exit trace
 		if (bIsLogging) {
 			LOGGER.exiting(LOG_CLASS, LOG_METHOD);
@@ -343,12 +321,9 @@ public class TemplateModel implements Cloneable {
 			LOGGER.entering(LOG_CLASS, LOG_METHOD);
 		}
 		// encode the text
-		aResponse.setRenderParameter(
-				privateMarshaller.marshalEnum(PARAMS.SAMPLE_TEXT),
-				privateMarshaller.marshalString(getSampleText()));
-		aResponse.setRenderParameter(
-				privateMarshaller.marshalEnum(PARAMS.SAMPLE_INT),
-				privateMarshaller.marshalInt(getSampleInt()));
+		encode(aResponse, PARAMS.SAMPLE_TEXT, getSampleText(),
+				DEFAULT_SAMPLE_TEXT);
+		encode(aResponse, PARAMS.SAMPLE_INT, getSampleInt(), DEFAULT_SAMPLE_INT);
 		// exit trace
 		if (bIsLogging) {
 			LOGGER.exiting(LOG_CLASS, LOG_METHOD);
@@ -366,10 +341,7 @@ public class TemplateModel implements Cloneable {
 		// check if we have already decoded the parameter
 		if (bSampleInt == null) {
 			// decodes the int
-			setSampleInt(privateMarshaller.unmarshalInt(request
-					.getParameter(privateMarshaller
-							.marshalEnum(PARAMS.SAMPLE_INT)),
-					DEFAULT_SAMPLE_INT));
+			setSampleInt(decode(PARAMS.SAMPLE_INT, DEFAULT_SAMPLE_INT));
 			// log this
 			if (bIsLogging) {
 				LOGGER.logp(LOG_LEVEL, LOG_CLASS, LOG_METHOD,
@@ -391,10 +363,7 @@ public class TemplateModel implements Cloneable {
 		// check if we have already decoded the parameter
 		if (bSampleText == null) {
 			// decodes the text
-			setSampleText(privateMarshaller.unmarshalString(request
-					.getParameter(privateMarshaller
-							.marshalEnum(PARAMS.SAMPLE_TEXT)),
-					DEFAULT_SAMPLE_TEXT));
+			setSampleText(decode(PARAMS.SAMPLE_TEXT, DEFAULT_SAMPLE_TEXT));
 			// log this
 			if (bIsLogging) {
 				LOGGER.logp(LOG_LEVEL, LOG_CLASS, LOG_METHOD,

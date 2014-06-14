@@ -62,6 +62,21 @@ public class PrivateParameterMarshaller extends AbstractMarshaller {
 	/*
 	 * (non-Javadoc)
 	 * 
+	 * @see com.ibm.portal.samples.common.Marshaller#marshalLong(long)
+	 */
+	@Override
+	public String marshalLong(long aRaw) {
+		/**
+		 * we use the maximum radix to generate a small representation. In a
+		 * production environment we'd use an even more compact encoding on the
+		 * basis of a larger alphabet, including a caching layer.
+		 */
+		return Long.toString(aRaw, RADIX);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see
 	 * com.ibm.portal.samples.common.Marshaller#unmarshalInt(java.lang.String,
 	 * int)
@@ -71,6 +86,22 @@ public class PrivateParameterMarshaller extends AbstractMarshaller {
 		try {
 			return (aToken != null) ? Integer.parseInt(aToken, RADIX)
 					: aDefault;
+		} catch (final Throwable th) {
+			return aDefault;
+		}
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.ibm.portal.samples.common.Marshaller#unmarshalLong(java.lang.String,
+	 * long)
+	 */
+	@Override
+	public long unmarshalLong(String aToken, long aDefault) {
+		try {
+			return (aToken != null) ? Long.parseLong(aToken, RADIX) : aDefault;
 		} catch (final Throwable th) {
 			return aDefault;
 		}

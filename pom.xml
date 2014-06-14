@@ -88,7 +88,7 @@
 			<groupId>javax.servlet</groupId>
 			<artifactId>servlet-api</artifactId>
 			<version>2.5</version>
-			<scope>provided</scope>			
+			<scope>provided</scope>
 		</dependency>
 
 		<!-- standard.jar -->
@@ -229,6 +229,7 @@
 		<module>WebSpherePortalPortletSamplesSetup</module>
 		<module>TemplatePortletSetup</module>
 		<module>TemplatePortlet</module>
+		<module>PortletSamplesUtils</module>
 	</modules>
 
 </project>
