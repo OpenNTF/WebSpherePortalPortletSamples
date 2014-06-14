@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>WebSpherePortalPortletSamplesOpenNTF</artifactId>
 	<packaging>pom</packaging>
-	<name>WebSphere Portal Portlet Samples Package</name>
+	<name>WebSphere Portal Portlet Samples OpenNTF Packaging</name>
 
 	<parent>
 		<groupId>com.ibm.portal.samples</groupId>
@@ -24,12 +24,18 @@
 
 	</dependencies>
 
+	<modules>
+		<module>../WebSpherePortalPortletSamplesSetup</module>
+		<module>../TemplatePortletSetup</module>
+		<module>../TemplatePortlet</module>
+	</modules>
+
 	<build>
 		<plugins>
 			<plugin>
 				<artifactId>maven-assembly-plugin</artifactId>
 				<version>2.4</version>
-				<configuration>				
+				<configuration>
 					<descriptors>
 						<descriptor>${basedir}/src/main/assembly/openntf.xml</descriptor>
 					</descriptors>

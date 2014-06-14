@@ -32,4 +32,22 @@
 		</dependencySet>
 	</dependencySets>
 
+	<moduleSets>
+		<moduleSet>
+			<sources>
+				<fileSets>
+					<fileSet>
+						<includes>
+							<include>pom.xml</include>
+							<include>src/**</include>
+						</includes>
+						<excludes>
+							<exclude>target/**</exclude>
+						</excludes>
+					</fileSet>
+				</fileSets>
+			</sources>
+		</moduleSet>
+	</moduleSets>
+
 </assembly>
