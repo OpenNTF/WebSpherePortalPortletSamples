@@ -230,6 +230,7 @@
 		<module>TemplatePortletSetup</module>
 		<module>TemplatePortlet</module>
 		<module>PortletSamplesUtils</module>
+		<module>MailPortlets</module>
 	</modules>
 
 </project>

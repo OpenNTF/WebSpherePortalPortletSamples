@@ -23,7 +23,6 @@ import com.ibm.portal.Disposable;
 import com.ibm.portal.samples.common.AbstractModel;
 import com.ibm.portal.samples.mail.common.MessageBean;
 import com.ibm.portal.samples.mail.helper.AbstractJstlMap;
-import com.ibm.portal.samples.mail.list.MailListBean;
 
 /**
  * Implementation of the state handling aspects of the composer portlet. In this

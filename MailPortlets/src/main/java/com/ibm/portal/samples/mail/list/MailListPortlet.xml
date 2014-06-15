@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<portlet xmlns="http://java.sun.com/xml/ns/portlet/portlet-app_2_0.xsd">
-	<portlet-name>TemplatePortlet</portlet-name>
-
-	<portlet-class>com.ibm.portal.samples.mvc.TemplatePortlet</portlet-class>
-
+<portlet xmlns="http://java.sun.com/xml/ns/portlet/portlet-app_2_0.xsd"
+	xmlns:public="http://www.ibm.com/xmlns/prod/websphere/portal/publicparams/sample/mail">
+	<portlet-name>MailListPortlet</portlet-name>
+	<portlet-class>
+		com.ibm.portal.samples.mail.list.MailListPortlet
+	</portlet-class>
 	<!-- WebSphere Portal specific: indicates that the markup is written such 
 		that it can cope with relative URLs. The main requirement is to place URL 
 		only in places that are meant to contain URLs by the HTML spec, in particular 
@@ -17,7 +18,7 @@
 		<value>true</value>
 	</init-param>
 	<!-- WebSphere Portal specific: indicates that the portlet container does 
-		not need to protect against the duplicate execution of the same action. This 
+		not need to protect agains the duplicate execution of the same action. This 
 		is important for cacheability concerns of the portlet, since with multiple 
 		action protection enabled, the markup of the portlet is uncacheable if it 
 		contains an action URL. -->
@@ -35,7 +36,12 @@
 		<name>wps.enforce.redirect</name>
 		<value>true</value>
 	</init-param>
-
+	<!-- Portlet specific: the portlet reads this parameter during rendering 
+		to find the JSP used for rendering. -->
+	<init-param>
+		<name>view.jsp</name>
+		<value>view.jsp</value>
+	</init-param>
 	<!-- indicate that we depend on OneUI for the styling -->
 	<init-param>
 		<name>capability.1.id</name>
@@ -50,19 +56,25 @@
 		<name>capabilities.selfManaged</name>
 		<value>false</value>
 	</init-param>
+	<init-param>
+		<name>com.ibm.portal.resolver.icon</name>
+		<value>/com/ibm/portal/samples/mail/list/icon.png</value>
+	</init-param>
 
-	<expiration-cache>3600</expiration-cache>
-
+	<expiration-cache>500000</expiration-cache>
 	<supports>
 		<mime-type>text/html</mime-type>
-		<portlet-mode>VIEW</portlet-mode>
+		<portlet-mode>view</portlet-mode>
 	</supports>
-
-	<resource-bundle>com.ibm.portal.samples.mvc.TemplateResources
+	<supported-locale>en</supported-locale>
+	<resource-bundle>com.ibm.portal.samples.mail.list.MailListPortlet
 	</resource-bundle>
-
 	<portlet-preferences />
-
+	<supported-processing-event>
+		<qname>public:send</qname>
+	</supported-processing-event>
+	<supported-public-render-parameter>sel
+	</supported-public-render-parameter>
 	<container-runtime-option>
 		<name>javax.portlet.renderHeaders</name>
 		<value>true</value>

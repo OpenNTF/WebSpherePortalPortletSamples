@@ -52,44 +52,31 @@ public class AbstractBean implements Disposable, Cloneable {
 	}
 
 	/**
-	 * the mail session
-	 */
-	private Session mailSession;
-
-	/**
-	 * the mail store
-	 */
-	private Store mailStore;
-
-	/**
-	 * the mail authenticator
-	 */
-	private Authenticator authenticator;
-
-	/** class name for the logger */
-	private static final String LOG_CLASS = AbstractBean.class.getName();
-
-	/** logging level */
-	private static final Level LOG_LEVEL = Level.FINER;
-
-	/** class logger */
-	private static final Logger LOGGER = Logger.getLogger(LOG_CLASS);
-
-	/**
 	 * the central cache instance
 	 */
 	private static final DistributedMap CACHE = DistributedObjectCacheFactory
 			.getMap(AbstractBean.class.getName());
 
 	/**
-	 * access to the puma services
+	 * we use this slot identifier
 	 */
-	private final PumaHome pumaHome;
+	protected static final String CREDENTIAL_SLOT_DESCRIPTION = AbstractBean.class
+			.getName();
 
 	/**
-	 * the current user
+	 * the default locale
 	 */
-	private ObjectID userID;
+	protected static final Locale DEFAULT_LOCALE = Locale.ENGLISH;
+
+	/**
+	 * cache key part for the folder
+	 */
+	private static final Object KEY_FOLDER = new Object();
+
+	/**
+	 * key into the message cache
+	 */
+	private static final Object KEY_MESSAGE = new Object();
 
 	/**
 	 * key into the cache for the session
@@ -101,15 +88,19 @@ public class AbstractBean implements Disposable, Cloneable {
 	 */
 	private static final Object KEY_STORE = new Object();
 
-	/**
-	 * key into the message cache
-	 */
-	private static final Object KEY_MESSAGE = new Object();
+	/** class name for the logger */
+	private static final String LOG_CLASS = AbstractBean.class.getName();
+
+	/** logging level */
+	private static final Level LOG_LEVEL = Level.FINER;
+
+	/** class logger */
+	private static final Logger LOGGER = Logger.getLogger(LOG_CLASS);
 
 	/**
-	 * cache key part for the folder
+	 * the mail authenticator
 	 */
-	private static final Object KEY_FOLDER = new Object();
+	private Authenticator authenticator;
 
 	/**
 	 * logging support
@@ -117,19 +108,29 @@ public class AbstractBean implements Disposable, Cloneable {
 	private final boolean bIsLogging = LOGGER.isLoggable(LOG_LEVEL);
 
 	/**
+	 * our credential
+	 */
+	private UserPasswordPassiveCredential credential;
+
+	/**
 	 * access to the credential vault
 	 */
 	private final CredentialVaultService credentialVaultService;
 
 	/**
-	 * we use this slot identifier
+	 * the mail session
 	 */
-	protected static final String CREDENTIAL_SLOT_DESCRIPTION = "com.ibm.portal.sample.portlet.mail.common.AbstractBean";
+	private Session mailSession;
 
 	/**
-	 * our credential slot configuration
+	 * the mail store
 	 */
-	private CredentialSlotConfig slotConfig;
+	private Store mailStore;
+
+	/**
+	 * access to the puma services
+	 */
+	private final PumaHome pumaHome;
 
 	/**
 	 * the portlet request
@@ -137,14 +138,14 @@ public class AbstractBean implements Disposable, Cloneable {
 	private final PortletRequest request;
 
 	/**
-	 * the default locale
+	 * our credential slot configuration
 	 */
-	protected static final Locale DEFAULT_LOCALE = Locale.ENGLISH;
+	private CredentialSlotConfig slotConfig;
 
 	/**
-	 * our credential
+	 * the current user
 	 */
-	private UserPasswordPassiveCredential credential;
+	private ObjectID userID;
 
 	protected AbstractBean(final PortletRequest aRequest,
 			final Dependencies aDeps) {

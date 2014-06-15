@@ -34,9 +34,14 @@ public class MailListView extends AbstractView {
 	private static final Logger LOGGER = Logger.getLogger(LOG_CLASS);
 
 	/**
-	 * model used for rendering
+	 * auth.desc
 	 */
-	private final MailListModel model;
+	private String authDesc;
+
+	/**
+	 * auth.title
+	 */
+	private String authTitle;
 
 	/**
 	 * logging support, we can do this as a instance variable since the model
@@ -45,24 +50,19 @@ public class MailListView extends AbstractView {
 	private final boolean bIsLogging = LOGGER.isLoggable(LOG_LEVEL);
 
 	/**
-	 * Primary Paging
+	 * date formatting
 	 */
-	private String pagingPrimary;
+	private Map<Object, Object> dateMap;
 
 	/**
-	 * Showing items {0} through {1} of {2}
+	 * model used for rendering
 	 */
-	private String pagingShowingLarge;
+	private final MailListModel model;
 
 	/**
-	 * {0} - {1} of {2}
+	 * Jump to a page between {0} and {1}
 	 */
-	private String pagingShowingSmall;
-
-	/**
-	 * Go to the previous page
-	 */
-	private String pagingPreviousPageTitle;
+	private String pagingJumpLarge;
 
 	/**
 	 * Jump to page
@@ -75,14 +75,9 @@ public class MailListView extends AbstractView {
 	private String pagingJumpSuffix;
 
 	/**
-	 * Jump to a page between {0} and {1}
+	 * Next
 	 */
-	private String pagingJumpLarge;
-
-	/**
-	 * Previous
-	 */
-	private String pagingPreviousPage;
+	private String pagingNextPage;
 
 	/**
 	 * Go to the next page
@@ -90,14 +85,24 @@ public class MailListView extends AbstractView {
 	private String pagingNextPageTitle;
 
 	/**
-	 * Login to portal
+	 * Page size formatting
 	 */
-	private String unauthenticatedMessage;
+	private Map<Object, Object> pagingPageSize;
 
 	/**
-	 * Next
+	 * Previous
 	 */
-	private String pagingNextPage;
+	private String pagingPreviousPage;
+
+	/**
+	 * Go to the previous page
+	 */
+	private String pagingPreviousPageTitle;
+
+	/**
+	 * Primary Paging
+	 */
+	private String pagingPrimary;
 
 	/**
 	 * Jump to page {0}
@@ -105,19 +110,14 @@ public class MailListView extends AbstractView {
 	private Map<Object, Object> pagingQuickPageTitle;
 
 	/**
-	 * date formatting
+	 * Showing items {0} through {1} of {2}
 	 */
-	private Map<Object, Object> dateMap;
+	private String pagingShowingLarge;
 
 	/**
-	 * Page size formatting
+	 * {0} - {1} of {2}
 	 */
-	private Map<Object, Object> pagingPageSize;
-
-	/**
-	 * Reverse sort
-	 */
-	private String sortReverse;
+	private String pagingShowingSmall;
 
 	/**
 	 * Show:
@@ -128,6 +128,36 @@ public class MailListView extends AbstractView {
 	 * items
 	 */
 	private String pagingShowSuffix;
+
+	/**
+	 * auth.password
+	 */
+	private String password;
+
+	/**
+	 * field.required
+	 */
+	private String requiredField;
+
+	/**
+	 * auth.save
+	 */
+	private String saveButton;
+
+	/**
+	 * Reverse sort
+	 */
+	private String sortReverse;
+
+	/**
+	 * Login to portal
+	 */
+	private String unauthenticatedMessage;
+
+	/**
+	 * auth.username
+	 */
+	private String username;
 
 	/**
 	 * Initialize this view bean
@@ -159,10 +189,31 @@ public class MailListView extends AbstractView {
 	}
 
 	/**
+	 * @return "Mail Credentials"
+	 */
+	public String getAuthenticationDescription() {
+		if (authDesc == null) {
+			authDesc = getMessage("auth.desc");
+		}
+		return authDesc;
+	}
+
+	/**
+	 * @return "Mail Credentials"
+	 */
+	public String getAuthenticationTitle() {
+		if (authTitle == null) {
+			authTitle = getMessage("auth.title");
+		}
+		return authTitle;
+	}
+
+	/**
 	 * Returns indexed access to a formatted date
 	 * 
 	 * @return map view to the date
 	 */
+	@Override
 	public Map<Object, Object> getDate() {
 		if (dateMap == null) {
 			dateMap = new AbstractJstlMap<Object, Object>() {
@@ -372,66 +423,6 @@ public class MailListView extends AbstractView {
 	}
 
 	/**
-	 * @return "Reverse sort"
-	 */
-	public String getSortReverse() {
-		if (sortReverse == null) {
-			sortReverse = getMessage("sort.reverse");
-		}
-		return sortReverse;
-	}
-
-	/**
-	 * auth.title
-	 */
-	private String authTitle;
-
-	/**
-	 * @return "Mail Credentials"
-	 */
-	public String getAuthenticationTitle() {
-		if (authTitle == null) {
-			authTitle = getMessage("auth.title");
-		}
-		return authTitle;
-	}
-
-	/**
-	 * auth.desc
-	 */
-	private String authDesc;
-
-	/**
-	 * @return "Mail Credentials"
-	 */
-	public String getAuthenticationDescription() {
-		if (authDesc == null) {
-			authDesc = getMessage("auth.desc");
-		}
-		return authDesc;
-	}
-
-	/**
-	 * auth.username
-	 */
-	private String username;
-
-	/**
-	 * @return "Username:"
-	 */
-	public String getUsername() {
-		if (username == null) {
-			username = getMessage("auth.username");
-		}
-		return username;
-	}
-
-	/**
-	 * auth.password
-	 */
-	private String password;
-
-	/**
 	 * @return "Username:"
 	 */
 	public String getPassword() {
@@ -439,6 +430,36 @@ public class MailListView extends AbstractView {
 			password = getMessage("auth.password");
 		}
 		return password;
+	}
+
+	/**
+	 * @return "Required field"
+	 */
+	public String getRequiredField() {
+		if (requiredField == null) {
+			requiredField = getMessage("field.required");
+		}
+		return requiredField;
+	}
+
+	/**
+	 * @return "Save..."
+	 */
+	public String getSaveButton() {
+		if (saveButton == null) {
+			saveButton = getMessage("auth.save");
+		}
+		return saveButton;
+	}
+
+	/**
+	 * @return "Reverse sort"
+	 */
+	public String getSortReverse() {
+		if (sortReverse == null) {
+			sortReverse = getMessage("sort.reverse");
+		}
+		return sortReverse;
 	}
 
 	/**
@@ -452,32 +473,12 @@ public class MailListView extends AbstractView {
 	}
 
 	/**
-	 * field.required
+	 * @return "Username:"
 	 */
-	private String requiredField;
-
-	/**
-	 * @return "Required field"
-	 */
-	public String getRequiredField() {
-		if (requiredField == null) {
-			requiredField = getMessage("field.required");
+	public String getUsername() {
+		if (username == null) {
+			username = getMessage("auth.username");
 		}
-		return requiredField;
-	}
-
-	/**
-	 * auth.save
-	 */
-	private String saveButton;
-
-	/**
-	 * @return "Save..."
-	 */
-	public String getSaveButton() {
-		if (saveButton == null) {
-			saveButton = getMessage("auth.save");
-		}
-		return saveButton;
+		return username;
 	}
 }

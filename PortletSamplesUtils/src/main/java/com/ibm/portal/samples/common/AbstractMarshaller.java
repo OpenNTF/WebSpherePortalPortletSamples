@@ -65,10 +65,10 @@ public abstract class AbstractMarshaller implements Marshaller {
 	public <E extends Enum<E>> E unmarshalEnum(final String aToken,
 			final E[] aEnums, final E aDefault) {
 		// sanity check
-		assert aDefault != null;
 		assert aEnums != null;
 		// decode the ordinal
-		final int idx = unmarshalInt(aToken, aDefault.ordinal());
+		final int idx = unmarshalInt(aToken,
+				(aDefault != null) ? aDefault.ordinal() : -1);
 		// map the ordinal or fallback
 		return ((idx >= 0) && (idx < aEnums.length)) ? aEnums[idx] : aDefault;
 	}

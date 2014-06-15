@@ -28,6 +28,7 @@
 		<module>../WebSpherePortalPortletSamplesSetup</module>
 		<module>../TemplatePortletSetup</module>
 		<module>../TemplatePortlet</module>
+		<module>../MailPortlets</module>
 	</modules>
 
 	<build>

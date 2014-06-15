@@ -41,6 +41,7 @@ import com.ibm.portal.samples.common.PublicParameterMarshaller;
 import com.ibm.portal.samples.mail.common.AbstractPortlet;
 import com.ibm.portal.samples.mail.common.SendEventBean;
 import com.ibm.portal.samples.mail.list.controller.MailListController;
+import com.ibm.portal.samples.mail.list.model.MailListBean;
 import com.ibm.portal.samples.mail.list.model.MailListModel;
 import com.ibm.portal.samples.mail.list.view.MailListView;
 import com.ibm.portal.um.PumaHome;
