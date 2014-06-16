@@ -35,6 +35,17 @@ public class PublicParameterMarshaller extends AbstractMarshaller {
 	/*
 	 * (non-Javadoc)
 	 * 
+	 * @see com.ibm.portal.samples.common.Marshaller#marshalBoolean(boolean)
+	 */
+	@Override
+	public String marshalBoolean(boolean aRaw) {
+		// converts the boolean into a string
+		return Boolean.toString(aRaw);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.ibm.portal.samples.common.Marshaller#marshalInt(int)
 	 */
 	@Override
@@ -50,6 +61,22 @@ public class PublicParameterMarshaller extends AbstractMarshaller {
 	@Override
 	public String marshalLong(final long aRaw) {
 		return Long.toString(aRaw);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.ibm.portal.samples.common.Marshaller#unmarshalBoolean(java.lang.String
+	 * , boolean)
+	 */
+	@Override
+	public boolean unmarshalBoolean(String aToken, boolean aDefault) {
+		try {
+			return (aToken != null) ? Boolean.parseBoolean(aToken) : aDefault;
+		} catch (final Throwable th) {
+			return aDefault;
+		}
 	}
 
 	/*

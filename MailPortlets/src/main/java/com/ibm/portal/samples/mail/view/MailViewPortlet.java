@@ -1,27 +1,23 @@
-package com.ibm.portal.samples.mail.list;
+package com.ibm.portal.samples.mail.view;
 
-import static com.ibm.portal.resolver.data.CharDataSource.CONTENT_TYPE_TEXT;
 import static com.ibm.portal.samples.mail.common.Constants.CREDENTIAL_VAULT_JNDI_NAME;
-import static javax.mail.Message.RecipientType.TO;
-import static javax.portlet.PortletMode.VIEW;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.URISyntaxException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.mail.Message;
-import javax.mail.internet.InternetAddress;
+import javax.mail.MessagingException;
+import javax.mail.Part;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.portlet.ActionRequest;
 import javax.portlet.ActionResponse;
-import javax.portlet.Event;
-import javax.portlet.EventRequest;
-import javax.portlet.EventResponse;
 import javax.portlet.MimeResponse;
 import javax.portlet.PortletConfig;
 import javax.portlet.PortletException;
-import javax.portlet.PortletMode;
 import javax.portlet.PortletRequest;
 import javax.portlet.RenderRequest;
 import javax.portlet.RenderResponse;
@@ -33,39 +29,39 @@ import org.w3c.dom.Element;
 
 import com.ibm.portal.portlet.service.PortletServiceHome;
 import com.ibm.portal.portlet.service.credentialvault.CredentialVaultService;
+import com.ibm.portal.resolver.service.CorPocServiceHome;
+import com.ibm.portal.resolver.xml.PooledTemplates;
 import com.ibm.portal.samples.common.ErrorBean;
 import com.ibm.portal.samples.common.Marshaller;
 import com.ibm.portal.samples.common.PrivateParameterMarshaller;
 import com.ibm.portal.samples.common.PublicParameterMarshaller;
 import com.ibm.portal.samples.mail.common.AbstractPortlet;
-import com.ibm.portal.samples.mail.common.SendEventBean;
-import com.ibm.portal.samples.mail.compose.model.MailComposeActions;
-import com.ibm.portal.samples.mail.compose.model.MailComposeModel;
-import com.ibm.portal.samples.mail.list.controller.MailListController;
-import com.ibm.portal.samples.mail.list.model.MailListActions;
-import com.ibm.portal.samples.mail.list.model.MailListBean;
-import com.ibm.portal.samples.mail.list.model.MailListModel;
-import com.ibm.portal.samples.mail.list.view.MailListView;
+import com.ibm.portal.samples.mail.common.MessageBean;
+import com.ibm.portal.samples.mail.view.controller.MailViewController;
+import com.ibm.portal.samples.mail.view.model.MailViewActions;
+import com.ibm.portal.samples.mail.view.model.MailViewBean;
+import com.ibm.portal.samples.mail.view.model.MailViewModel;
+import com.ibm.portal.samples.mail.view.view.MailViewView;
 import com.ibm.portal.um.PumaHome;
 
 /**
  * Implementation of the portlet that displays a customer list. The portlet's
  * view is realized as a JSP. Access to the data model and URLs is made
- * available via beans, the {@link MailListModel} bean and the
- * {@link MailListController} bean.
+ * available via beans, the {@link MailViewModel} bean and the
+ * {@link MailViewController} bean.
  * 
  * @author cleue
  */
-public class MailListPortlet extends AbstractPortlet {
+public class MailViewPortlet extends AbstractPortlet {
 
 	/**
 	 * Depenendency resolution of the models
 	 * 
 	 * @author cleue
 	 */
-	private final class Dependencies implements MailListBean.Dependencies,
-			MailListModel.Dependencies, MailListController.Dependencies,
-			MailListActions.Dependencies {
+	private final class Dependencies implements MailViewBean.Dependencies,
+			MailViewView.Dependencies, MailViewModel.Dependencies,
+			MailViewActions.Dependencies, MailViewController.Dependencies {
 
 		/*
 		 * (non-Javadoc)
@@ -78,6 +74,19 @@ public class MailListPortlet extends AbstractPortlet {
 		public CredentialVaultService getCredentialVaultService() {
 			// access to the credential vault
 			return credentialVaultService;
+		}
+
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see
+		 * com.ibm.portal.sample.portlet.mail.view.MessageParser.Dependencies#
+		 * getIdentityTemplates()
+		 */
+		@Override
+		public PooledTemplates getIdentityTemplates() {
+			// convenient access to the templates
+			return pocHome.getIdentityTemplates();
 		}
 
 		/*
@@ -139,7 +148,7 @@ public class MailListPortlet extends AbstractPortlet {
 	private static final String KEY_VIEW = "view";
 
 	/** class name for the logger */
-	private static final String LOG_CLASS = MailListPortlet.class.getName();
+	private static final String LOG_CLASS = MailViewPortlet.class.getName();
 
 	/** logging level */
 	private static final Level LOG_LEVEL = Level.FINER;
@@ -156,32 +165,20 @@ public class MailListPortlet extends AbstractPortlet {
 	 * prefix for the JSP path
 	 */
 	private static final String PRIVATE_PATH_PREFIX = "/WEB-INF/"
-			+ MailListPortlet.class.getPackage().getName().replace('.', '/')
+			+ MailViewPortlet.class.getPackage().getName().replace('.', '/')
 			+ "/";
 
 	/**
 	 * prefix for public resources
 	 */
 	private static final String PUBLIC_PATH_PREFIX = "/"
-			+ MailListPortlet.class.getPackage().getName().replace('.', '/')
+			+ MailViewPortlet.class.getPackage().getName().replace('.', '/')
 			+ "/";
-
-	/**
-	 * path to the unauthenticated JSP
-	 */
-	private static final String UNAUTHENTICATED_JSP = PRIVATE_PATH_PREFIX
-			+ "unauthenticated" + PATH_SUFFIX;
 
 	/**
 	 * path to the AJAX JSP
 	 */
 	private static final String AJAX_JSP = PRIVATE_PATH_PREFIX + "ajax"
-			+ PATH_SUFFIX;
-
-	/**
-	 * path to the edit JSP
-	 */
-	private static final String EDIT_JSP = PRIVATE_PATH_PREFIX + "edit"
 			+ PATH_SUFFIX;
 
 	/**
@@ -193,6 +190,11 @@ public class MailListPortlet extends AbstractPortlet {
 	 * dependency injection
 	 */
 	private final Dependencies dependencies = new Dependencies();
+
+	/**
+	 * access to the templates
+	 */
+	private CorPocServiceHome pocHome;
 
 	/**
 	 * access to the puma APIs
@@ -213,21 +215,18 @@ public class MailListPortlet extends AbstractPortlet {
 	 * @throws PortletException
 	 * @throws IOException
 	 */
-	private final MailListActions createActions(final MailListModel aModel,
-			final MailListBean aBean, final ActionRequest aRequest,
-			final ActionResponse aResponse) throws PortletException,
-			IOException {
+	private final MailViewActions createActions(final MailViewModel aModel,
+			final ActionRequest aRequest, final ActionResponse aResponse)
+			throws PortletException, IOException {
 		// sanity check
 		assert aModel != null;
-		assert aBean != null;
 		assert aRequest != null;
 		assert aResponse != null;
 		/**
 		 * Decodes the action.This method normally does not have to be changed.
 		 * Rather change the implementation of the action.
 		 */
-		return new MailListActions(aModel, aBean, aRequest, aResponse,
-				dependencies);
+		return new MailViewActions(aModel, aRequest, aResponse, dependencies);
 	}
 
 	/*
@@ -245,6 +244,7 @@ public class MailListPortlet extends AbstractPortlet {
 		}
 		// reset
 		pumaHome = null;
+		pocHome = null;
 		credentialVaultService = null;
 		// shutdown
 		super.destroy();
@@ -254,14 +254,6 @@ public class MailListPortlet extends AbstractPortlet {
 		}
 	}
 
-	/**
-	 * Initialize the beans and make them available as request parameters
-	 * 
-	 * @param aRequest
-	 *            request
-	 * @param aResponse
-	 *            response
-	 */
 	private final void destroyBeans(final PortletRequest aRequest) {
 		// add the beans to the request
 		removeBean(KEY_BEAN, aRequest);
@@ -321,44 +313,31 @@ public class MailListPortlet extends AbstractPortlet {
 		final String LOG_METHOD = "doView(request, response)";
 		final boolean bIsLogging = LOGGER.isLoggable(LOG_LEVEL);
 		if (bIsLogging) {
-			LOGGER.entering(LOG_CLASS, LOG_METHOD);
+			LOGGER.entering(LOG_CLASS, LOG_METHOD, new Object[] { request,
+					response });
 		}
 
 		// start time
 		final long t1 = System.currentTimeMillis();
 
-		// initialize the beans
+		// init the beans in the request
 		initBeans(request, response);
 		try {
 			// init the response
 			response.setContentType(request.getResponseContentType());
-			// check which JSP to render
-			final MailListModel model = getModel(request);
-			// the JSP
-			final String jspPath;
-			// check for the unauthenticated case
-			if (model.isLoggedIn()) {
-				// dispatch based on the mode
-				final PortletMode mode = request.getPortletMode();
-				if (model.isAuthenticated() && (mode == VIEW)) {
-					// use the ajax path
-					jspPath = AJAX_JSP;
-				} else {
-					// use the mode based path
-					jspPath = EDIT_JSP;
-				}
+			// check if the system is authenticated
+			final MailViewModel model = getModel(request);
+			if (model.isAuthenticated()) {
+				// lazy load of the view
+				getPortletContext().getRequestDispatcher(AJAX_JSP).include(
+						request, response);
 			} else {
-				// use the mode based path
-				jspPath = UNAUTHENTICATED_JSP;
+				// log this
+				if (bIsLogging) {
+					LOGGER.logp(LOG_LEVEL, LOG_CLASS, LOG_METHOD,
+							"Skip rendering of the view because the backend is not authenticated.");
+				}
 			}
-			// log this
-			if (bIsLogging) {
-				LOGGER.logp(LOG_LEVEL, LOG_CLASS, LOG_METHOD,
-						"Including JSP [{0}].", jspPath);
-			}
-			// dispatch
-			getPortletContext().getRequestDispatcher(jspPath).include(request,
-					response);
 		} finally {
 			// cleanup
 			destroyBeans(request);
@@ -376,25 +355,14 @@ public class MailListPortlet extends AbstractPortlet {
 	}
 
 	/**
-	 * Accesses the current bean from the request
-	 * 
-	 * @param aRequest
-	 *            the request
-	 * @return the current bean
-	 */
-	private final MailListBean getBean(final PortletRequest aRequest) {
-		return (MailListBean) aRequest.getAttribute(KEY_BEAN);
-	}
-
-	/**
 	 * Accesses the current model from the request
 	 * 
 	 * @param aRequest
 	 *            the request
 	 * @return the current model
 	 */
-	private final MailListModel getModel(final PortletRequest aRequest) {
-		return (MailListModel) aRequest.getAttribute(KEY_MODEL);
+	private final MailViewModel getModel(final PortletRequest aRequest) {
+		return (MailViewModel) aRequest.getAttribute(KEY_MODEL);
 	}
 
 	/*
@@ -416,6 +384,8 @@ public class MailListPortlet extends AbstractPortlet {
 			// service lookup via JNDI
 			final InitialContext ctx = new InitialContext();
 			pumaHome = (PumaHome) ctx.lookup(PumaHome.JNDI_NAME);
+			pocHome = (CorPocServiceHome) ctx
+					.lookup(CorPocServiceHome.JNDI_NAME);
 
 			final PortletServiceHome psh = (PortletServiceHome) ctx
 					.lookup(CREDENTIAL_VAULT_JNDI_NAME);
@@ -442,13 +412,13 @@ public class MailListPortlet extends AbstractPortlet {
 	private final void initBeans(final PortletRequest aRequest,
 			final MimeResponse aResponse) {
 		// initialize the beans
-		final MailListBean bean = new MailListBean(aRequest, dependencies);
-		final MailListModel model = new MailListModel(bean, aRequest,
+		final MailViewBean bean = new MailViewBean(aRequest, dependencies);
+		final MailViewModel model = new MailViewModel(bean, aRequest,
 				dependencies);
-		final MailListView view = new MailListView(getPortletConfig(),
-				aRequest, aResponse, model);
-		final MailListController controller = new MailListController(model,
+		final MailViewController controller = new MailViewController(model,
 				aResponse, dependencies);
+		final MailViewView view = new MailViewView(getPortletConfig(),
+				aRequest, aResponse, model, controller, dependencies);
 		// add the beans to the request
 		setBean(KEY_BEAN, bean, aRequest);
 		setBean(KEY_MODEL, model, aRequest);
@@ -467,8 +437,8 @@ public class MailListPortlet extends AbstractPortlet {
 	private final void initBeans(final PortletRequest aRequest,
 			final StateAwareResponse aResponse) {
 		// initialize the beans
-		final MailListBean bean = new MailListBean(aRequest, dependencies);
-		final MailListModel model = new MailListModel(bean, aRequest,
+		final MailViewBean bean = new MailViewBean(aRequest, dependencies);
+		final MailViewModel model = new MailViewModel(bean, aRequest,
 				dependencies);
 		// add the beans to the request
 		setBean(KEY_BEAN, bean, aRequest);
@@ -497,10 +467,9 @@ public class MailListPortlet extends AbstractPortlet {
 		// initialize the beans
 		initBeans(request, response);
 		// decode the model
-		final MailListModel model = getModel(request);
+		final MailViewModel model = getModel(request);
 		// construct the action handler
-		final MailListActions actions = createActions(model, getBean(request),
-				request, response);
+		final MailViewActions actions = createActions(model, request, response);
 		try {
 			// process the model
 			if (actions.processActions()) {
@@ -532,69 +501,47 @@ public class MailListPortlet extends AbstractPortlet {
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
+	/**
+	 * Copies the bytes for an embedded resource onto the output stream.
 	 * 
-	 * @see
-	 * javax.portlet.GenericPortlet#processEvent(javax.portlet.EventRequest,
-	 * javax.portlet.EventResponse)
+	 * @param messageResource
+	 * @param message
+	 * @param request
+	 * @param response
+	 * 
+	 * @throws MessagingException
+	 * @throws IOException
+	 * @throws URISyntaxException
 	 */
-	@Override
-	public void processEvent(final EventRequest request,
-			final EventResponse response) throws PortletException, IOException {
+	private final void serveMessageResource(final String messageResource,
+			final MessageBean message, final ResourceRequest request,
+			final ResourceResponse response) throws MessagingException,
+			IOException, URISyntaxException {
 		// logging support
-		final String LOG_METHOD = "processEvent(request, response)";
+		final String LOG_METHOD = "serveMessageResource(messageResource, message, request, response)";
 		final boolean bIsLogging = LOGGER.isLoggable(LOG_LEVEL);
 		if (bIsLogging) {
-			LOGGER.entering(LOG_CLASS, LOG_METHOD);
+			LOGGER.entering(LOG_CLASS, LOG_METHOD, new Object[] {
+					messageResource, message, request, response });
 		}
-		// clear previous errors
-		ErrorBean.clear(request);
-		// init the beans
-		initBeans(request, response);
-		// access the model
-		final MailListModel model = getModel(request);
-		try {
-			// interpret the event
-			final Event event = request.getEvent();
-			// log this
-			if (bIsLogging) {
-				LOGGER.logp(LOG_LEVEL, LOG_CLASS, LOG_METHOD,
-						"Received event [{0}].", event.getQName());
+		// locate the part
+		final Part part = message.getPartByID(messageResource);
+		if (part != null) {
+			// serve the part
+			response.setContentType(part.getContentType());
+			// copy
+			final byte[] buffer = new byte[256];
+			final InputStream is = part.getInputStream();
+			final OutputStream os = response.getPortletOutputStream();
+			for (int i = is.read(buffer); i >= 0; i = is.read(buffer)) {
+				os.write(buffer, 0, i);
 			}
-			// interpret the event
-			if (SendEventBean.EVENT_NAME.equals(event.getQName())) {
-				// access the payload
-				final SendEventBean sendBean = (SendEventBean) event.getValue();
-				// access the helper bean
-				final MailListBean bean = getBean(request);
-				// construct the message
-				final Message message = bean.createMessage();
-				message.setRecipients(TO,
-						InternetAddress.parse(sendBean.getAddress()));
-				message.setSubject(sendBean.getSubject());
-				message.setText(sendBean.getText());
-				// send
-				bean.sendMessage(message);
-				// log this
-				if (bIsLogging) {
-					LOGGER.logp(LOG_LEVEL, LOG_CLASS, LOG_METHOD,
-							"Sent message to [{0}].", sendBean.getAddress());
-				}
-			}
-		} catch (final Throwable ex) {
-			// adds the error
-			ErrorBean.setThrowable(ex, request);
-		} finally {
-			// in any case encode the model
-			model.encode(response);
-			// cleanup
-			destroyBeans(request);
 		}
 		// exit trace
 		if (bIsLogging) {
 			LOGGER.exiting(LOG_CLASS, LOG_METHOD);
 		}
+
 	}
 
 	/*
@@ -612,28 +559,43 @@ public class MailListPortlet extends AbstractPortlet {
 		final String LOG_METHOD = "serveResource(request, response)";
 		final boolean bIsLogging = LOGGER.isLoggable(LOG_LEVEL);
 		if (bIsLogging) {
-			LOGGER.entering(LOG_CLASS, LOG_METHOD);
+			LOGGER.entering(LOG_CLASS, LOG_METHOD, new Object[] { request,
+					response });
 		}
-		// decode the model
+		// init the beans in the request
 		initBeans(request, response);
 		try {
-			// access the model
-			final MailListModel model = getModel(request);
-			// check the cases
-			if (model.isCheckMail()) {
-				/**
-				 * We simply print out the number of messages. This is not
-				 * always correct, but for a demo ...
-				 */
-				response.setContentType(CONTENT_TYPE_TEXT);
-				response.setProperty("Cache-Control", "must-revalidate");
-				response.getWriter().println(model.getItemCount());
-
-			} else if (model.isRefresh()) {
-				// produce a result
-				response.setContentType("text/html");
-				response.setProperty("Cache-Control", "must-revalidate");
-				// dispatch to the view JSP
+			// check if we server an image or the message
+			final MailViewModel model = getModel(request);
+			// check if the model addresses content
+			final String messageResource = model.getMessageResource();
+			if (messageResource != null) {
+				// access the currently selected message
+				final MessageBean msgBean = model.getSelectedMessage();
+				if (msgBean != null) {
+					// log this
+					if (bIsLogging) {
+						LOGGER.logp(
+								LOG_LEVEL,
+								LOG_CLASS,
+								LOG_METHOD,
+								"Addressing resource [{0}] for message [{1}].",
+								new Object[] { messageResource, msgBean.getId() });
+					}
+					// serve this
+					serveMessageResource(messageResource, msgBean, request,
+							response);
+				}
+			} else {
+				// subsequent links should again be AJAX
+				model.setRenderMessage(false);
+				request.setAttribute("renderMessage", true);
+				// log this
+				if (bIsLogging) {
+					LOGGER.logp(LOG_LEVEL, LOG_CLASS, LOG_METHOD,
+							"Rendering message content.");
+				}
+				// locate the JSP
 				final String jspPath = PRIVATE_PATH_PREFIX
 						+ request.getPortletMode() + PATH_SUFFIX;
 				// log this
@@ -641,12 +603,14 @@ public class MailListPortlet extends AbstractPortlet {
 					LOGGER.logp(LOG_LEVEL, LOG_CLASS, LOG_METHOD,
 							"Including JSP [{0}].", jspPath);
 				}
-				// dispatch
 				getPortletContext().getRequestDispatcher(jspPath).include(
 						request, response);
 			}
+		} catch (final Exception ex) {
+			// bail out
+			throw new PortletException(ex);
 		} finally {
-			// cleanup
+			// done
 			destroyBeans(request);
 		}
 		// exit trace
@@ -654,4 +618,5 @@ public class MailListPortlet extends AbstractPortlet {
 			LOGGER.exiting(LOG_CLASS, LOG_METHOD);
 		}
 	}
+
 }

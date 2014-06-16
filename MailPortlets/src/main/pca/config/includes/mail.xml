@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<target
+	name="action-deploy-apps-applySIFeaturePack-components/com.ibm.portal.samples-MailPortlets">
+
+	<propertyfile
+		file="${Components/com.ibm.portal.samples-MailPortletsHome}/config/com.ibm.portal.samples-MailPortlets.properties" />
+
+	<!-- import ltpa key and ssl certificates -->
+	<filtersetall />
+	<antcall target="iseries-switch-back" />
+	<copy
+		toFile="${Components/com.ibm.portal.samples-MailPortletsHome}/config/templates/ssl.py"
+		file="${Components/com.ibm.portal.samples-MailPortletsHome}/config/templates/template_ssl.py"
+		overwrite="true" filtering="true" />
+	<antcall target="iseries-switch-to-was-user" />
+
+	<wsadmin lang="jython"
+		script="${Components/com.ibm.portal.samples-MailPortletsHome}/config/templates/ssl.py"
+		conntype="SOAP" port="${WasSoapPort}" host="${WasRemoteHostName}"
+		user="${WasUserid}" password="${WasPassword}" failonerror="no">
+	</wsadmin>
+
+</target>

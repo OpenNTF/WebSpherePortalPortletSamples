@@ -25,6 +25,17 @@ package com.ibm.portal.samples.common;
 public interface Marshaller {
 
 	/**
+	 * Converts a boolean into a transfer string representation.
+	 * 
+	 * @param aRaw
+	 *            the boolean value
+	 * @return the transfer string representation
+	 * 
+	 * @see #unmarshalBoolean(String, boolean)
+	 */
+	String marshalBoolean(final boolean aRaw);
+
+	/**
 	 * Encodes an enumeration as a transfer string.
 	 * 
 	 * @param aRaw
@@ -67,6 +78,19 @@ public interface Marshaller {
 	 * @see #unmarshalString(String, String)
 	 */
 	String marshalString(final String aRaw);
+
+	/**
+	 * Decodes a transfer string representation into a boolean
+	 * 
+	 * @param aToken
+	 *            transfer string to decode
+	 * @param aDefault
+	 *            default value, used in case of an error or a missing value
+	 * @return the decoded boolean
+	 * 
+	 * @see #marshalBoolean(boolean)
+	 */
+	boolean unmarshalBoolean(String aToken, boolean aDefault);
 
 	/**
 	 * Decodes from the string representation of an enumeration to the

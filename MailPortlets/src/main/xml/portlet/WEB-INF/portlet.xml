@@ -7,6 +7,7 @@
 	<!-- include the portlets by reference. The reference is relative to the 
 		BASE_DIR parameter in the XSLT. -->
 	<portlet href="mail/list/MailListPortlet.xml" />
+	<portlet href="mail/view/MailViewPortlet.xml" />
 
 	<event-definition>
 		<qname>public:send</qname>

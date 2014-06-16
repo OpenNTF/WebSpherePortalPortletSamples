@@ -35,6 +35,16 @@ import static java.lang.Character.MAX_RADIX;
 public class PrivateParameterMarshaller extends AbstractMarshaller {
 
 	/**
+	 * integer representation of false
+	 */
+	private static final int INT_FALSE = 0;
+
+	/**
+	 * integer representation of true
+	 */
+	private static final int INT_TRUE = 1;
+
+	/**
 	 * Radix used for int conversion
 	 */
 	private static final int RADIX = MAX_RADIX;
@@ -43,6 +53,39 @@ public class PrivateParameterMarshaller extends AbstractMarshaller {
 	 * singleton access
 	 */
 	public static final Marshaller SINGLETON = new PrivateParameterMarshaller();
+
+	/**
+	 * Converts from boolean to integer
+	 * 
+	 * @param aValue
+	 *            boolean value
+	 * @return matching integer
+	 */
+	private static final int booleanToInt(final boolean aValue) {
+		return aValue ? INT_TRUE : INT_FALSE;
+	}
+
+	/**
+	 * Converts from an integer to a boolean
+	 * 
+	 * @param aValue
+	 *            the integer
+	 * @return the boolean
+	 */
+	private static final boolean intToBoolean(final int aValue) {
+		return aValue != INT_FALSE;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.ibm.portal.samples.common.Marshaller#marshalBoolean(boolean)
+	 */
+	@Override
+	public String marshalBoolean(boolean aRaw) {
+		// marshal as an integer
+		return marshalInt(booleanToInt(aRaw));
+	}
 
 	/*
 	 * (non-Javadoc)
@@ -72,6 +115,19 @@ public class PrivateParameterMarshaller extends AbstractMarshaller {
 		 * basis of a larger alphabet, including a caching layer.
 		 */
 		return Long.toString(aRaw, RADIX);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.ibm.portal.samples.common.Marshaller#unmarshalBoolean(java.lang.String
+	 * , boolean)
+	 */
+	@Override
+	public boolean unmarshalBoolean(String aToken, boolean aDefault) {
+		// unmarshal as an integer
+		return intToBoolean(unmarshalInt(aToken, booleanToInt(aDefault)));
 	}
 
 	/*

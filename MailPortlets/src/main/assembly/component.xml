@@ -19,6 +19,11 @@
 		</fileSet>
 
 		<fileSet>
+			<directory>src/main/pca</directory>
+			<outputDirectory>.</outputDirectory>
+		</fileSet>
+
+		<fileSet>
 			<directory>${project.build.directory}/${project.build.finalName}-pca</directory>
 			<outputDirectory>${paa.component}</outputDirectory>
 		</fileSet>

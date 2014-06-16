@@ -92,6 +92,12 @@ public abstract class AbstractModel implements Cloneable {
 	@Override
 	protected abstract AbstractModel clone();
 
+	protected boolean decode(final Enum<?> aKey, final boolean aDefaultValue) {
+		return privateMarshaller.unmarshalBoolean(
+				request.getParameter(privateMarshaller.marshalEnum(aKey)),
+				aDefaultValue);
+	}
+
 	protected <E extends Enum<E>> E decode(final Enum<?> aKey,
 			final E[] aValues, final E aDefaultValue) {
 		return privateMarshaller.unmarshalEnum(
@@ -117,6 +123,11 @@ public abstract class AbstractModel implements Cloneable {
 				aDefaultValue);
 	}
 
+	protected boolean decode(final String aKey, final boolean aDefaultValue) {
+		return publicMarshaller.unmarshalBoolean(request.getParameter(aKey),
+				aDefaultValue);
+	}
+
 	protected int decode(final String aKey, final int aDefaultValue) {
 		return publicMarshaller.unmarshalInt(request.getParameter(aKey),
 				aDefaultValue);
@@ -130,6 +141,16 @@ public abstract class AbstractModel implements Cloneable {
 	protected String decode(final String aKey, final String aDefaultValue) {
 		return publicMarshaller.unmarshalString(request.getParameter(aKey),
 				aDefaultValue);
+	}
+
+	protected void encode(final BaseURL aState, final Enum<?> aKey,
+			final boolean aValue, final boolean aDefaultValue) {
+		// only encode if required
+		if (aDefaultValue != aValue) {
+			// encode the text
+			aState.setParameter(privateMarshaller.marshalEnum(aKey),
+					privateMarshaller.marshalBoolean(aValue));
+		}
 	}
 
 	protected <E extends Enum<E>> void encode(final BaseURL aState,
@@ -172,6 +193,11 @@ public abstract class AbstractModel implements Cloneable {
 		}
 	}
 
+	protected void encode(final BaseURL aState, String aKey, final boolean aValue) {
+		// encode the text
+		aState.setParameter(aKey, publicMarshaller.marshalBoolean(aValue));
+	}
+
 	protected void encode(final BaseURL aState, String aKey, final int aValue) {
 		// encode the text
 		aState.setParameter(aKey, publicMarshaller.marshalInt(aValue));
@@ -185,6 +211,16 @@ public abstract class AbstractModel implements Cloneable {
 	protected void encode(final BaseURL aState, String aKey, final String aValue) {
 		// encode the text
 		aState.setParameter(aKey, publicMarshaller.marshalString(aValue));
+	}
+
+	protected void encode(final StateAwareResponse aState, final Enum<?> aKey,
+			final boolean aValue, final boolean aDefaultValue) {
+		// only encode if required
+		if (aDefaultValue != aValue) {
+			// encode the text
+			aState.setRenderParameter(privateMarshaller.marshalEnum(aKey),
+					privateMarshaller.marshalBoolean(aValue));
+		}
 	}
 
 	protected <E extends Enum<E>> void encode(final StateAwareResponse aState,
@@ -225,6 +261,12 @@ public abstract class AbstractModel implements Cloneable {
 			aState.setRenderParameter(privateMarshaller.marshalEnum(aKey),
 					privateMarshaller.marshalString(aValue));
 		}
+	}
+
+	protected void encode(final StateAwareResponse aState, String aKey,
+			final boolean aValue) {
+		// encode the text
+		aState.setRenderParameter(aKey, publicMarshaller.marshalBoolean(aValue));
 	}
 
 	protected void encode(final StateAwareResponse aState, String aKey,
