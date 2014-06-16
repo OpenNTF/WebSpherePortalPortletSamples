@@ -25,6 +25,7 @@ public class MailListBean extends AbstractBean {
 
 	public interface Dependencies extends AbstractBean.Dependencies {
 
+		@Override
 		CredentialVaultService getCredentialVaultService();
 
 	}
@@ -39,6 +40,11 @@ public class MailListBean extends AbstractBean {
 	private static final Logger LOGGER = Logger.getLogger(LOG_CLASS);
 
 	/**
+	 * logging support
+	 */
+	private final boolean bIsLogging = LOGGER.isLoggable(LOG_LEVEL);
+
+	/**
 	 * access to the credential vault
 	 */
 	private final CredentialVaultService credentialVaultService;
@@ -47,11 +53,6 @@ public class MailListBean extends AbstractBean {
 	 * the request
 	 */
 	private final PortletRequest request;
-
-	/**
-	 * logging support
-	 */
-	private final boolean bIsLogging = LOGGER.isLoggable(LOG_LEVEL);
 
 	public MailListBean(final PortletRequest aRequest, final Dependencies aDeps) {
 		super(aRequest, aDeps);
@@ -111,26 +112,45 @@ public class MailListBean extends AbstractBean {
 	 * 
 	 * @throws CredentialVaultException
 	 */
-	public void storeCredentials(final String aUserMail, final String aPassword)
-			throws CredentialVaultException {
+	public boolean storeCredentials(final String aUserMail,
+			final String aPassword) throws CredentialVaultException {
 		// logging support
 		final String LOG_METHOD = "storeCredentials(aUserMail, aPassword)";
 		if (bIsLogging) {
 			LOGGER.entering(LOG_CLASS, LOG_METHOD, new Object[] { aUserMail });
 		}
-		// check if we can find the slot
-		CredentialSlotConfig slot = getCredentialSlot();
-		if (slot == null) {
-			// create a new slot
-			slot = createMailSlot();
-			assert slot != null;
+		// the result
+		final boolean bResult;
+		// sanity check
+		if (isValid(aUserMail) && isValid(aPassword)) {
+			// check if we can find the slot
+			CredentialSlotConfig slot = getCredentialSlot();
+			if (slot == null) {
+				// create a new slot
+				slot = createMailSlot();
+				assert slot != null;
+			}
+			// use vault service to store the userID / password secret in the
+			// slot
+			credentialVaultService.setCredentialSecretUserPassword(
+					slot.getSlotId(), aUserMail, aPassword.toCharArray(),
+					request);
+			// we persisted the data
+			bResult = true;
+		} else {
+			// log this
+			if (bIsLogging) {
+				LOGGER.logp(LOG_LEVEL, LOG_CLASS, LOG_METHOD,
+						"Invalid username or password.");
+			}
+			// nothing changed
+			bResult = false;
 		}
-		// use vault service to store the userID / password secret in the slot
-		credentialVaultService.setCredentialSecretUserPassword(
-				slot.getSlotId(), aUserMail, aPassword.toCharArray(), request);
 		// exit trace
 		if (bIsLogging) {
-			LOGGER.exiting(LOG_CLASS, LOG_METHOD);
+			LOGGER.exiting(LOG_CLASS, LOG_METHOD, bResult);
 		}
+		// ok
+		return bResult;
 	}
 }

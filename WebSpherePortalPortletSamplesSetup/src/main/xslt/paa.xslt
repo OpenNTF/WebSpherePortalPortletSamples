@@ -50,7 +50,7 @@
 							<parameter name="installLocation" defaultValue="/usr/dummy.offr.1" />
 						</parameters>
 					</variables>
- 					<xsl:apply-templates select="document($DEPENDENCIES)" />
+					<xsl:apply-templates select="document($DEPENDENCIES)" />
 				</rootIU>
 			</content>
 
@@ -62,7 +62,7 @@
 	</xsl:template>
 
 	<xsl:template match="dependency">
-		<xsl:if test="string(@artifactId)">
+		<xsl:if test="@type='zip'">
 			<xsl:variable name="name"
 				select="concat('components/', @groupId, '-', @artifactId)" />
 			<containedPackage id="{$name}" pathname="{$name}/sdd.xml" />

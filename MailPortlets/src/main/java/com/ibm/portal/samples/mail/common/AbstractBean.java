@@ -333,6 +333,17 @@ public class AbstractBean implements Disposable, Cloneable {
 	}
 
 	/**
+	 * Validate the string
+	 * 
+	 * @param aValue
+	 *            the value
+	 * @return <code>true</code> if the string is valid, else <code>false</code>
+	 */
+	protected boolean isValid(final String aValue) {
+		return (aValue != null) && !aValue.isEmpty();
+	}
+
+	/**
 	 * Access the folder in question
 	 * 
 	 * @param aName

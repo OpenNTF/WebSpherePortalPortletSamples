@@ -30,6 +30,14 @@
 			<type>zip</type>
 		</dependency>
 
+		<dependency>
+			<groupId>com.ibm.portal.samples</groupId>
+			<artifactId>MailPortlets</artifactId>
+			<version>${project.version}</version>
+			<classifier>pca</classifier>
+			<type>zip</type>
+		</dependency>
+
 	</dependencies>
 
 	<build>
@@ -78,8 +86,8 @@
 							<target>
 								<property name="tmp.dependencies"
 									location="${project.build.directory}/dependencies.txt" />
-								<replaceregexp match="\s{3}([^:]*):([^:]*):.*|^(.*):$"
-									replace="&lt;!-- \3 --&gt;&lt;dependency groupId=&quot;\1&quot; artifactId=&quot;\2&quot;/&gt;"
+								<replaceregexp match="\s{3}([^:]*):([^:]*):([^:]*):(.*)|^(.*):$"
+									replace="&lt;!-- \4 --&gt;&lt;dependency groupId=&quot;\1&quot; artifactId=&quot;\2&quot; type=&quot;\3&quot;/&gt;"
 									flags="g" byline="true" file="${tmp.dependencies}" />
 								<loadfile property="tmp.dependencies.content" srcFile="${tmp.dependencies}" />
 								<echo file="${tmp.dependencies}">

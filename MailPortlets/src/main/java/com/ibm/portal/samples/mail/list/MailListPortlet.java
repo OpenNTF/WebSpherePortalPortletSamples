@@ -3,7 +3,6 @@ package com.ibm.portal.samples.mail.list;
 import static com.ibm.portal.resolver.data.CharDataSource.CONTENT_TYPE_TEXT;
 import static com.ibm.portal.samples.mail.common.Constants.CREDENTIAL_VAULT_JNDI_NAME;
 import static javax.mail.Message.RecipientType.TO;
-import static javax.portlet.ActionRequest.ACTION_NAME;
 import static javax.portlet.PortletMode.VIEW;
 
 import java.io.IOException;
@@ -41,6 +40,7 @@ import com.ibm.portal.samples.common.PublicParameterMarshaller;
 import com.ibm.portal.samples.mail.common.AbstractPortlet;
 import com.ibm.portal.samples.mail.common.SendEventBean;
 import com.ibm.portal.samples.mail.list.controller.MailListController;
+import com.ibm.portal.samples.mail.list.model.MailListActions;
 import com.ibm.portal.samples.mail.list.model.MailListBean;
 import com.ibm.portal.samples.mail.list.model.MailListModel;
 import com.ibm.portal.samples.mail.list.view.MailListView;
@@ -57,76 +57,13 @@ import com.ibm.portal.um.PumaHome;
 public class MailListPortlet extends AbstractPortlet {
 
 	/**
-	 * Enumeration of the available actions. We use the enums to dispatch the
-	 * actions
-	 * 
-	 * @author cleue
-	 */
-	public enum ACTIONS {
-
-		/**
-		 * Action to set authentication credentials
-		 */
-		AUTHENTICATE {
-			@Override
-			protected void processAction(final ActionRequest request,
-					final ActionResponse response, final MailListPortlet portlet)
-					throws PortletException, IOException {
-				// dispatch
-				portlet.authenticateAction(request, response);
-			}
-		};
-
-		/**
-		 * access the enumeration values without making a copy every time
-		 */
-		private static final ACTIONS[] VALUES = values();
-
-		/**
-		 * Converts from ID to action
-		 * 
-		 * @param aID
-		 *            the ID
-		 * @return the matching action identifier
-		 */
-		public static final ACTIONS fromId(final String aID) {
-			return VALUES[Integer.parseInt(aID)];
-		}
-
-		// use some short, optimized encoding
-		private final String id = String.valueOf(ordinal());
-
-		/**
-		 * Action callback
-		 * 
-		 * @param request
-		 * @param response
-		 * @throws PortletException
-		 * @throws IOException
-		 */
-		protected abstract void processAction(final ActionRequest request,
-				final ActionResponse response, MailListPortlet portlet)
-				throws PortletException, IOException;
-
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see java.lang.Enum#toString()
-		 */
-		@Override
-		public String toString() {
-			// returns a short identifier
-			return id;
-		}
-	}
-
-	/**
 	 * Depenendency resolution of the models
 	 * 
 	 * @author cleue
 	 */
 	private final class Dependencies implements MailListBean.Dependencies,
-			MailListModel.Dependencies {
+			MailListModel.Dependencies, MailListController.Dependencies,
+			MailListActions.Dependencies {
 
 		/*
 		 * (non-Javadoc)
@@ -216,14 +153,14 @@ public class MailListPortlet extends AbstractPortlet {
 	/**
 	 * prefix for the JSP path
 	 */
-	private static final String PRIVATE_PATH_PREFIX = "/WEB-INF/resources/"
+	private static final String PRIVATE_PATH_PREFIX = "/WEB-INF/"
 			+ MailListPortlet.class.getPackage().getName().replace('.', '/')
 			+ "/";
 
 	/**
 	 * prefix for public resources
 	 */
-	private static final String PUBLIC_PATH_PREFIX = "/resources/"
+	private static final String PUBLIC_PATH_PREFIX = "/"
 			+ MailListPortlet.class.getPackage().getName().replace('.', '/')
 			+ "/";
 
@@ -232,11 +169,6 @@ public class MailListPortlet extends AbstractPortlet {
 	 */
 	private static final String UNAUTHENTICATED_JSP = PRIVATE_PATH_PREFIX
 			+ "unauthenticated" + PATH_SUFFIX;
-
-	/**
-	 * access to the credential vault
-	 */
-	private CredentialVaultService credentialVaultService;
 
 	/**
 	 * path to the AJAX JSP
@@ -251,6 +183,11 @@ public class MailListPortlet extends AbstractPortlet {
 			+ PATH_SUFFIX;
 
 	/**
+	 * access to the credential vault
+	 */
+	private CredentialVaultService credentialVaultService;
+
+	/**
 	 * dependency injection
 	 */
 	private final Dependencies dependencies = new Dependencies();
@@ -261,52 +198,34 @@ public class MailListPortlet extends AbstractPortlet {
 	private PumaHome pumaHome;
 
 	/**
-	 * Implementation of the send mail action. We basically parse the form and
-	 * send an event to the list portlet that then will actually send the mail
-	 * via smtp.
+	 * Constructs the action handler
 	 * 
-	 * @param request
-	 * @param response
+	 * @param aModel
+	 *            model the actions will work on
+	 * @param aRequest
+	 *            the action request
+	 * @param aResponse
+	 *            the action response
+	 * @return the model
 	 * 
 	 * @throws PortletException
 	 * @throws IOException
 	 */
-	private final void authenticateAction(final ActionRequest request,
-			final ActionResponse response) throws PortletException, IOException {
-		// logging support
-		final String LOG_METHOD = "authenticateAction(request, response)";
-		final boolean bIsLogging = LOGGER.isLoggable(LOG_LEVEL);
-		if (bIsLogging) {
-			LOGGER.entering(LOG_CLASS, LOG_METHOD, new Object[] { request,
-					response });
-		}
+	private final MailListActions createActions(final MailListModel aModel,
+			final MailListBean aBean, final ActionRequest aRequest,
+			final ActionResponse aResponse) throws PortletException,
+			IOException {
+		// sanity check
+		assert aModel != null;
+		assert aBean != null;
+		assert aRequest != null;
+		assert aResponse != null;
 		/**
-		 * Organize the multipart request into a mapping between input field
-		 * name and part
+		 * Decodes the action.This method normally does not have to be changed.
+		 * Rather change the implementation of the action.
 		 */
-		/**
-		 * try { final Map<String, MimeBodyPart> parts =
-		 * Mime.decodeParts(request); // log this if (bIsLogging) {
-		 * LOGGER.logp(LOG_LEVEL, LOG_CLASS, LOG_METHOD, "Decoded parts [{0}].",
-		 * parts); } // decode the character set final Charset charset =
-		 * Mime.getCharset(parts); // decode username and password final String
-		 * userName = Mime.getString( parts.get(CTRL_USERNAME.toString()),
-		 * charset), password = Mime
-		 * .getString(parts.get(CTRL_PASSWORD.toString()), charset); // check if
-		 * we have data if (!userName.isEmpty() && !password.isEmpty()) { //
-		 * construct the mail slot final MailListBean bean = getBean(request);
-		 * assert bean != null; // construct the slot
-		 * bean.storeCredentials(userName, password); } else { // log this if
-		 * (bIsLogging) { LOGGER.logp(LOG_LEVEL, LOG_CLASS, LOG_METHOD,
-		 * "Username or password are empty."); } } } catch (final IOException
-		 * ex) { // just pass on throw ex; } catch (final Exception ex) { //
-		 * bail out throw new PortletException(ex); }
-		 */
-
-		// exit trace
-		if (bIsLogging) {
-			LOGGER.exiting(LOG_CLASS, LOG_METHOD);
-		}
+		return new MailListActions(aModel, aBean, aRequest, aResponse,
+				dependencies);
 	}
 
 	/*
@@ -527,7 +446,7 @@ public class MailListPortlet extends AbstractPortlet {
 		final MailListView view = new MailListView(getPortletConfig(),
 				aRequest, aResponse, model);
 		final MailListController controller = new MailListController(model,
-				aResponse);
+				aResponse, dependencies);
 		// add the beans to the request
 		setBean(KEY_BEAN, bean, aRequest);
 		setBean(KEY_MODEL, model, aRequest);
@@ -577,24 +496,31 @@ public class MailListPortlet extends AbstractPortlet {
 		initBeans(request, response);
 		// decode the model
 		final MailListModel model = getModel(request);
+		// construct the action handler
+		final MailListActions actions = createActions(model, getBean(request),
+				request, response);
 		try {
-			// dispatch based on the action ID
-			final ACTIONS action = ACTIONS.fromId(request
-					.getParameter(ACTION_NAME));
-			assert action != null;
-			// log this
-			if (bIsLogging) {
-				LOGGER.logp(LOG_LEVEL, LOG_CLASS, LOG_METHOD,
-						"Decoded action [{0}].", action);
+			// process the model
+			if (actions.processActions()) {
+				// log this
+				if (bIsLogging) {
+					LOGGER.logp(LOG_LEVEL, LOG_CLASS, LOG_METHOD,
+							"Committing the model ...");
+				}
+				// commit persistent modifications
+				actions.commit();
 			}
-			// dispatch
-			action.processAction(request, response, this);
 		} catch (final Throwable ex) {
 			// adds the exception to the session
 			ErrorBean.setThrowable(ex, request);
 		} finally {
-			// encode the (modifed) model into the response
+			/**
+			 * Encodes the model. This is an important step, without it the
+			 * navigational state would be lost after the action.
+			 */
 			model.encode(response);
+			// dispose
+			actions.dispose();
 			// cleanup
 			destroyBeans(request);
 		}
@@ -726,4 +652,5 @@ public class MailListPortlet extends AbstractPortlet {
 			LOGGER.exiting(LOG_CLASS, LOG_METHOD);
 		}
 	}
+
 }

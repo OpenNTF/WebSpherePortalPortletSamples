@@ -1221,4 +1221,5 @@ public class MailListModel extends AbstractModel implements Disposable,
 				+ ", sortColumn: " + sortColumn + ", sortOrder: " + sortOrder
 				+ "]";
 	}
+
 }
