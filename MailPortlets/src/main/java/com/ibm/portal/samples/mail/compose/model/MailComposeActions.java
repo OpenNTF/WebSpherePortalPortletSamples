@@ -189,6 +189,18 @@ public class MailComposeActions implements Committable, Disposable {
 		}
 
 		/**
+		 * Checks for a valid string
+		 * 
+		 * @param aValue
+		 *            the value
+		 * @return <code>true</code> if the string is valid, else
+		 *         <code>false</code>
+		 */
+		private final boolean isValid(final String aValue) {
+			return ((aValue != null) && !aValue.isEmpty());
+		}
+
+		/**
 		 * Moves to the next entries
 		 * 
 		 * @return <code>true</code> if we found a next entry, else
@@ -261,22 +273,37 @@ public class MailComposeActions implements Committable, Disposable {
 			if (bIsLogging) {
 				LOGGER.entering(LOG_CLASS, LOG_METHOD);
 			}
-			// construct the event
-			final SendEventBean eventBean = new SendEventBean();
-			// populate the event
-			eventBean.setReceiver(receiver);
-			eventBean.setSubject(subject);
-			eventBean.setText(body);
-			// fire the event
-			response.setEvent(SendEventBean.EVENT_NAME, eventBean);
-			// clear the current content
-			model.clearMessage();
+			// result
+			final boolean bResult;
+			// sanity check
+			if (isValid(receiver)) {
+				// construct the event
+				final SendEventBean eventBean = new SendEventBean();
+				// populate the event
+				eventBean.setReceiver(receiver);
+				eventBean.setSubject(subject);
+				eventBean.setText(body);
+				// fire the event
+				response.setEvent(SendEventBean.EVENT_NAME, eventBean);
+				// clear the current content
+				model.clearMessage();
+				// ok
+				bResult = true;
+			} else {
+				// log this
+				if (bIsLogging) {
+					LOGGER.logp(LOG_LEVEL, LOG_CLASS, LOG_METHOD,
+							"Receiver not set.");
+				}
+				// not handled
+				bResult = false;
+			}
 			// exit trace
 			if (bIsLogging) {
-				LOGGER.exiting(LOG_CLASS, LOG_METHOD);
+				LOGGER.exiting(LOG_CLASS, LOG_METHOD, bResult);
 			}
-			// nothing changed
-			return false;
+			// ok
+			return bResult;
 		}
 
 		/**
@@ -324,7 +351,7 @@ public class MailComposeActions implements Committable, Disposable {
 		 */
 		private final boolean readReceiver() throws IOException {
 			// reads the text
-			subject = readString();
+			receiver = readString();
 			// no persistent modification
 			return false;
 		}

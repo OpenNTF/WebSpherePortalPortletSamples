@@ -15,9 +15,9 @@
  */
 
 /**
- * The package contains some helper concepts that can be reused across different portlets.
+ * Implementation of the controller for the {@link com.ibm.portal.samples.mail.compose.MailComposePortlet}. The controller
+ * is called when portlet actions are invoked and updates the {@link com.ibm.portal.samples.mail.compose.model.MailComposeModel} model.
  * 
  * @author cleue
- *
  */
-package com.ibm.portal.samples.common;
+package com.ibm.portal.samples.mail.compose.controller;

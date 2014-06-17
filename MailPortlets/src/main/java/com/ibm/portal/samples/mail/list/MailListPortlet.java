@@ -1,21 +1,32 @@
+/*
+ * (C) Copyright IBM Corp. 2014
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License"); 
+ * you may not use this file except in compliance with the License. 
+ * You may obtain a copy of the License at:
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0 
+ * 
+ * Unless required by applicable law or agreed to in writing, software 
+ * distributed under the License is distributed on an "AS IS" BASIS, 
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or 
+ * implied. See the License for the specific language governing 
+ * permissions and limitations under the License.
+ */
 package com.ibm.portal.samples.mail.list;
 
 import static com.ibm.portal.resolver.data.CharDataSource.CONTENT_TYPE_TEXT;
 import static com.ibm.portal.samples.mail.common.Constants.CREDENTIAL_VAULT_JNDI_NAME;
-import static javax.mail.Message.RecipientType.TO;
 import static javax.portlet.PortletMode.VIEW;
 
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.mail.Message;
-import javax.mail.internet.InternetAddress;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.portlet.ActionRequest;
 import javax.portlet.ActionResponse;
-import javax.portlet.Event;
 import javax.portlet.EventRequest;
 import javax.portlet.EventResponse;
 import javax.portlet.MimeResponse;
@@ -38,12 +49,10 @@ import com.ibm.portal.samples.common.Marshaller;
 import com.ibm.portal.samples.common.PrivateParameterMarshaller;
 import com.ibm.portal.samples.common.PublicParameterMarshaller;
 import com.ibm.portal.samples.mail.common.AbstractPortlet;
-import com.ibm.portal.samples.mail.common.SendEventBean;
-import com.ibm.portal.samples.mail.compose.model.MailComposeActions;
-import com.ibm.portal.samples.mail.compose.model.MailComposeModel;
 import com.ibm.portal.samples.mail.list.controller.MailListController;
 import com.ibm.portal.samples.mail.list.model.MailListActions;
 import com.ibm.portal.samples.mail.list.model.MailListBean;
+import com.ibm.portal.samples.mail.list.model.MailListEvents;
 import com.ibm.portal.samples.mail.list.model.MailListModel;
 import com.ibm.portal.samples.mail.list.view.MailListView;
 import com.ibm.portal.um.PumaHome;
@@ -59,7 +68,7 @@ import com.ibm.portal.um.PumaHome;
 public class MailListPortlet extends AbstractPortlet {
 
 	/**
-	 * Depenendency resolution of the models
+	 * Dependency resolution of the models
 	 * 
 	 * @author cleue
 	 */
@@ -228,6 +237,34 @@ public class MailListPortlet extends AbstractPortlet {
 		 */
 		return new MailListActions(aModel, aBean, aRequest, aResponse,
 				dependencies);
+	}
+
+	/**
+	 * Constructs the event handler
+	 * 
+	 * @param aModel
+	 *            model the actions will work on
+	 * @param aRequest
+	 *            the event request
+	 * @param aResponse
+	 *            the event response
+	 * @return the model
+	 * 
+	 * @throws PortletException
+	 * @throws IOException
+	 */
+	private final MailListEvents createEvents(final MailListModel aModel,
+			final MailListBean aBean, final EventRequest aRequest,
+			final EventResponse aResponse) throws PortletException, IOException {
+		// sanity check
+		assert aModel != null;
+		assert aRequest != null;
+		assert aResponse != null;
+		/**
+		 * Decodes the action.This method normally does not have to be changed.
+		 * Rather change the implementation of the action.
+		 */
+		return new MailListEvents(aModel, aBean, aRequest);
 	}
 
 	/*
@@ -546,48 +583,40 @@ public class MailListPortlet extends AbstractPortlet {
 		final String LOG_METHOD = "processEvent(request, response)";
 		final boolean bIsLogging = LOGGER.isLoggable(LOG_LEVEL);
 		if (bIsLogging) {
-			LOGGER.entering(LOG_CLASS, LOG_METHOD);
+			LOGGER.entering(LOG_CLASS, LOG_METHOD, new Object[] { request,
+					response });
 		}
 		// clear previous errors
 		ErrorBean.clear(request);
-		// init the beans
+		// initialize the beans
 		initBeans(request, response);
-		// access the model
+		// decode the model
 		final MailListModel model = getModel(request);
+		// construct the action handler
+		final MailListEvents events = createEvents(model, getBean(request),
+				request, response);
 		try {
-			// interpret the event
-			final Event event = request.getEvent();
-			// log this
-			if (bIsLogging) {
-				LOGGER.logp(LOG_LEVEL, LOG_CLASS, LOG_METHOD,
-						"Received event [{0}].", event.getQName());
-			}
-			// interpret the event
-			if (SendEventBean.EVENT_NAME.equals(event.getQName())) {
-				// access the payload
-				final SendEventBean sendBean = (SendEventBean) event.getValue();
-				// access the helper bean
-				final MailListBean bean = getBean(request);
-				// construct the message
-				final Message message = bean.createMessage();
-				message.setRecipients(TO,
-						InternetAddress.parse(sendBean.getAddress()));
-				message.setSubject(sendBean.getSubject());
-				message.setText(sendBean.getText());
-				// send
-				bean.sendMessage(message);
+			// process the model
+			if (events.processEvents()) {
 				// log this
 				if (bIsLogging) {
 					LOGGER.logp(LOG_LEVEL, LOG_CLASS, LOG_METHOD,
-							"Sent message to [{0}].", sendBean.getAddress());
+							"Committing the model ...");
 				}
+				// commit persistent modifications
+				events.commit();
 			}
 		} catch (final Throwable ex) {
-			// adds the error
+			// adds the exception to the session
 			ErrorBean.setThrowable(ex, request);
 		} finally {
-			// in any case encode the model
+			/**
+			 * Encodes the model. This is an important step, without it the
+			 * navigational state would be lost after the action.
+			 */
 			model.encode(response);
+			// dispose
+			events.dispose();
 			// cleanup
 			destroyBeans(request);
 		}

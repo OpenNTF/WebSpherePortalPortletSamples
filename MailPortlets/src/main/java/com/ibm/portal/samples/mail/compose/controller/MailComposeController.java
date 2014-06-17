@@ -1,3 +1,18 @@
+/*
+ * (C) Copyright IBM Corp. 2014
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License"); 
+ * you may not use this file except in compliance with the License. 
+ * You may obtain a copy of the License at:
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0 
+ * 
+ * Unless required by applicable law or agreed to in writing, software 
+ * distributed under the License is distributed on an "AS IS" BASIS, 
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or 
+ * implied. See the License for the specific language governing 
+ * permissions and limitations under the License.
+ */
 package com.ibm.portal.samples.mail.compose.controller;
 
 import java.io.IOException;
@@ -81,7 +96,7 @@ public class MailComposeController extends AbstractController implements
 	 */
 	public MailComposeController(final MailComposeModel aModel,
 			final MimeResponse aResponse, Dependencies aDeps) {
-		super(aDeps);
+		super(aModel, aResponse, aDeps);
 		model = aModel;
 		response = aResponse;
 	}
@@ -103,30 +118,6 @@ public class MailComposeController extends AbstractController implements
 		if (bIsLogging) {
 			LOGGER.exiting(LOG_CLASS, LOG_METHOD);
 		}
-	}
-
-	/**
-	 * Returns a generic action URL. It is not necessary to set an action ID,
-	 * since we rather transport the action ID via the multipart input stream.
-	 * 
-	 * @return the action URL
-	 * @throws IOException
-	 */
-	public PortletURL getActionURL() throws IOException {
-		// logging support
-		final String LOG_METHOD = "getActionURL()";
-		if (bIsLogging) {
-			LOGGER.entering(LOG_CLASS, LOG_METHOD);
-		}
-		// construct the URL
-		final PortletURL url = response.createActionURL();
-		model.encode(url);
-		// exit trace
-		if (bIsLogging) {
-			LOGGER.exiting(LOG_CLASS, LOG_METHOD, url);
-		}
-		// return the result
-		return url;
 	}
 
 	/**

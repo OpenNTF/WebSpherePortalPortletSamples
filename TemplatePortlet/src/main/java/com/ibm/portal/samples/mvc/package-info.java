@@ -13,6 +13,7 @@
  * implied. See the License for the specific language governing 
  * permissions and limitations under the License.
  */
+
 /**
  * Base package for the implementation of the {@link com.ibm.portal.samples.mvc.TemplatePortlet} portlet. The basic
  * structure of the portlet consists of the model bean {@link com.ibm.portal.samples.mvc.model.TemplateModel} that

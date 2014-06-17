@@ -63,7 +63,6 @@
 				value="${controller.valueActionEnterCredentials}" class="lotusBtn">
 				<c:out value="${view.saveButton}" />
 			</button>
-
 		</div>
 	</form>
 

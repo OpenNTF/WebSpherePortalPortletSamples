@@ -8,10 +8,11 @@
 		BASE_DIR parameter in the XSLT. -->
 	<portlet href="mail/list/MailListPortlet.xml" />
 	<portlet href="mail/view/MailViewPortlet.xml" />
+	<portlet href="mail/compose/MailComposePortlet.xml" />
 
 	<event-definition>
 		<qname>public:send</qname>
-		<value-type>com.ibm.portal.sample.portlet.mail.common.SendEventBean
+		<value-type>com.ibm.portal.samples.mail.common.SendEventBean
 		</value-type>
 	</event-definition>
 

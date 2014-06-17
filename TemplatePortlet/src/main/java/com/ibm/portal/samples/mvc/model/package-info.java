@@ -13,6 +13,7 @@
  * implied. See the License for the specific language governing 
  * permissions and limitations under the License.
  */
+
 /**
  * Implementation of the model for the {@link com.ibm.portal.samples.mvc.TemplatePortlet}. The model represents the navigational
  * state of the portlet.

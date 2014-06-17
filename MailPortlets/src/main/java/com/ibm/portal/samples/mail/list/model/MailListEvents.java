@@ -13,13 +13,19 @@
  * implied. See the License for the specific language governing 
  * permissions and limitations under the License.
  */
-package com.ibm.portal.samples.mail.compose.model;
+package com.ibm.portal.samples.mail.list.model;
+
+import static javax.mail.Message.RecipientType.TO;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.internet.AddressException;
+import javax.mail.internet.InternetAddress;
 import javax.portlet.Event;
 import javax.portlet.EventRequest;
 import javax.xml.namespace.QName;
@@ -34,15 +40,15 @@ import com.ibm.portal.samples.mail.common.SendEventBean;
  * event is mapped to an {@link EVENT} enumeration that couples the event to its
  * implementation.
  * 
- * Event implementations modify the underlying {@link MailComposeModel} which
- * will be encoded into the navigational state after the end of the action
- * phase. If an action resulted in a persistent change of data, the action
- * implementation should return <code>true</code> to indicate this and the
- * framework will call the {@link MailComposeActions#commit()} method.
+ * Event implementations modify the underlying {@link MailListModel} which will
+ * be encoded into the navigational state after the end of the action phase. If
+ * an action resulted in a persistent change of data, the action implementation
+ * should return <code>true</code> to indicate this and the framework will call
+ * the {@link MailListActions#commit()} method.
  * 
  * @author cleue
  */
-public class MailComposeEvents implements Committable, Disposable {
+public class MailListEvents implements Committable, Disposable {
 
 	public enum EVENT {
 
@@ -53,7 +59,7 @@ public class MailComposeEvents implements Committable, Disposable {
 
 			@Override
 			protected boolean processEvent(Event aEvent,
-					final MailComposeEvents aHandler) throws Exception {
+					final MailListEvents aHandler) throws Exception {
 				// dispatch
 				return aHandler.processSendMail(aEvent);
 			}
@@ -79,7 +85,7 @@ public class MailComposeEvents implements Committable, Disposable {
 		 * @throws Exception
 		 */
 		protected abstract boolean processEvent(final Event aEvent,
-				final MailComposeEvents aHandler) throws Exception;
+				final MailListEvents aHandler) throws Exception;
 	}
 
 	/**
@@ -89,7 +95,7 @@ public class MailComposeEvents implements Committable, Disposable {
 			.values());
 
 	/** class name for the logger */
-	private static final String LOG_CLASS = MailComposeEvents.class.getName();
+	private static final String LOG_CLASS = MailListEvents.class.getName();
 
 	/** logging level */
 	private static final Level LOG_LEVEL = Level.FINER;
@@ -113,29 +119,36 @@ public class MailComposeEvents implements Committable, Disposable {
 	}
 
 	/**
+	 * access to the mail APIs
+	 */
+	private final MailListBean bean;
+
+	/**
 	 * logging support
 	 */
 	private final boolean bIsLogging = LOGGER.isLoggable(LOG_LEVEL);
-
-	/**
-	 * current model
-	 */
-	private final MailComposeModel model;
 
 	/**
 	 * the event request
 	 */
 	private final EventRequest request;
 
-	public MailComposeEvents(final MailComposeModel aModel,
+	public MailListEvents(final MailListModel aModel, final MailListBean aBean,
 			final EventRequest aRequest) {
 		// sanity check
 		assert aModel != null;
+		assert aBean != null;
+		assert aRequest != null;
 		// maintain a model reference
-		model = aModel;
+		bean = aBean;
 		request = aRequest;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.ibm.portal.Committable#commit()
+	 */
 	@Override
 	public void commit() throws CannotCommitException {
 		// TODO Auto-generated method stub
@@ -203,8 +216,11 @@ public class MailComposeEvents implements Committable, Disposable {
 	 *            event object
 	 * @return <code>true</code> if the processing resulted in a persistent
 	 *         modification, else <code>false</code>
+	 * @throws MessagingException
+	 * @throws AddressException
 	 */
-	private final boolean processSendMail(final Event aEvent) {
+	private final boolean processSendMail(final Event aEvent)
+			throws AddressException, MessagingException {
 		// logging support
 		final String LOG_METHOD = "processSendMail(aEvent)";
 		if (bIsLogging) {
@@ -212,9 +228,24 @@ public class MailComposeEvents implements Committable, Disposable {
 		}
 		// access the payload
 		final SendEventBean sendBean = (SendEventBean) aEvent.getValue();
-		// copy over the state
-		model.setAddress(sendBean.getAddress());
-		model.setSubject(sendBean.getSubject());
+		assert sendBean != null;
+		// log this
+		if (bIsLogging) {
+			LOGGER.logp(LOG_LEVEL, LOG_CLASS, LOG_METHOD,
+					"SendEventBean: [{0}].", sendBean);
+		}
+		// construct the message
+		final Message message = bean.createMessage();
+		message.setRecipients(TO, InternetAddress.parse(sendBean.getAddress()));
+		message.setSubject(sendBean.getSubject());
+		message.setText(sendBean.getText());
+		// send
+		bean.sendMessage(message);
+		// log this
+		if (bIsLogging) {
+			LOGGER.logp(LOG_LEVEL, LOG_CLASS, LOG_METHOD,
+					"Sent message to [{0}].", sendBean.getAddress());
+		}
 		// exit trace
 		if (bIsLogging) {
 			LOGGER.exiting(LOG_CLASS, LOG_METHOD);
