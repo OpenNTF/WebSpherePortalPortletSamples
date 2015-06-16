@@ -42,20 +42,6 @@
 		<name>view.jsp</name>
 		<value>view.jsp</value>
 	</init-param>
-	<!-- indicate that we depend on OneUI for the styling -->
-	<init-param>
-		<name>capability.1.id</name>
-		<value>oneUI</value>
-	</init-param>
-	<init-param>
-		<name>capability.1.minValue</name>
-		<value>3.0</value>
-	</init-param>
-	<!-- if oneUI is unavailable we'd rather fail than fall back -->
-	<init-param>
-		<name>capabilities.selfManaged</name>
-		<value>false</value>
-	</init-param>
 	<init-param>
 		<name>com.ibm.portal.resolver.icon</name>
 		<value>/com/ibm/portal/samples/mail/list/icon.png</value>
@@ -69,7 +55,25 @@
 	<supported-locale>en</supported-locale>
 	<resource-bundle>com.ibm.portal.samples.mail.list.MailListPortlet
 	</resource-bundle>
-	<portlet-preferences />
+	<portlet-preferences>
+		<!-- indicate that we depend on OneUI for the styling -->
+		<preference>
+			<name>capability.1.id</name>
+			<value>oneUI</value>
+			<read-only>true</read-only>
+		</preference>
+		<preference>
+			<name>capability.1.minValue</name>
+			<value>3.0</value>
+			<read-only>true</read-only>
+		</preference>
+		<!-- if oneUI is unavailable we'd rather fail than fall back -->
+		<preference>
+			<name>capabilities.selfManaged</name>
+			<value>false</value>
+			<read-only>true</read-only>
+		</preference>
+	</portlet-preferences>
 	<supported-processing-event>
 		<qname>public:send</qname>
 	</supported-processing-event>

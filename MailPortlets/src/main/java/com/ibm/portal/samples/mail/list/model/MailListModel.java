@@ -979,6 +979,9 @@ public class MailListModel extends AbstractModel implements Disposable,
 				// try to access the session
 				bAuthenticated = getFolder() != null;
 			} catch (MessagingException ex) {
+				
+				ex.printStackTrace();
+				
 				// not authenticated
 				bAuthenticated = false;
 			}

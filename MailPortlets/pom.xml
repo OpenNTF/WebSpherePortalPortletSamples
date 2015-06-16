@@ -24,8 +24,8 @@
 
 		<dependency>
 			<groupId>com.ibm.portal</groupId>
-			<artifactId>public-spi</artifactId>
-			<version>8.1</version>
+			<artifactId>spi</artifactId>
+			<version>8.5.0-FP01-CF06</version>
 			<scope>provided</scope>
 		</dependency>
 
@@ -33,6 +33,20 @@
 			<groupId>was</groupId>
 			<artifactId>was_public</artifactId>
 			<version>7.0</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>servlet-api</artifactId>
+			<version>2.5</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>jsp-api</artifactId>
+			<version>2.0</version>
 			<scope>provided</scope>
 		</dependency>
 
